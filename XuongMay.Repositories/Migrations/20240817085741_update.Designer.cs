@@ -12,8 +12,8 @@ using XuongMay.Repositories.Context;
 namespace XuongMay.Repositories.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20240817062533_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20240817085741_update")]
+    partial class update
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -267,28 +267,80 @@ namespace XuongMay.Repositories.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("XuongMay.Contract.Repositories.Entity.Order", b =>
+            modelBuilder.Entity("XuongMay.Contract.Repositories.Entity.Category", b =>
                 {
-                    b.Property<int>("OrderId")
-                        .ValueGeneratedOnAdd()
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("CategoryID")
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderId"));
+                    b.Property<string>("CategoryName")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset>("CreatedTime")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("DeletedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset?>("DeletedTime")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("LastUpdatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset>("LastUpdatedTime")
+                        .HasColumnType("datetimeoffset");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Categorys");
+                });
+
+            modelBuilder.Entity("XuongMay.Contract.Repositories.Entity.Order", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset>("CreatedTime")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("DeletedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset?>("DeletedTime")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<DateTime>("EndTime")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("LastUpdatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset>("LastUpdatedTime")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<string>("OrderName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("ProductID")
-                        .HasColumnType("int");
+                    b.Property<string>("ProductID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("StartTime")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("OrderId");
+                    b.HasKey("Id");
 
                     b.HasIndex("ProductID");
 
@@ -297,82 +349,92 @@ namespace XuongMay.Repositories.Migrations
 
             modelBuilder.Entity("XuongMay.Contract.Repositories.Entity.OrderProductionLine", b =>
                 {
-                    b.Property<int>("OrderID")
-                        .HasColumnType("int");
+                    b.Property<string>("OrderID")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("LineID")
-                        .HasColumnType("int");
+                    b.Property<string>("LineID")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ProductionLineId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("OrderID", "LineID");
 
-                    b.HasIndex("LineID");
+                    b.HasIndex("ProductionLineId");
 
                     b.ToTable("OrderProductionLines");
                 });
 
             modelBuilder.Entity("XuongMay.Contract.Repositories.Entity.Product", b =>
                 {
-                    b.Property<int>("ProductID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProductID"));
+                    b.Property<string>("CategoryID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<int?>("CategoryID")
-                        .HasColumnType("int");
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset>("CreatedTime")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("DeletedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset?>("DeletedTime")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("LastUpdatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset>("LastUpdatedTime")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<string>("ProductName")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("ProductID");
+                    b.HasKey("Id");
 
                     b.HasIndex("CategoryID");
 
-                    b.ToTable("SanPham");
-                });
-
-            modelBuilder.Entity("XuongMay.Contract.Repositories.Entity.ProductCategory", b =>
-                {
-                    b.Property<int>("CategoryID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CategoryID"));
-
-                    b.Property<string>("CategoryName")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.HasKey("CategoryID");
-
-                    b.ToTable("ProductCategorys");
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("XuongMay.Contract.Repositories.Entity.ProductionLine", b =>
                 {
-                    b.Property<int>("LineID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("LineID"));
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("LineCode")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                    b.Property<DateTimeOffset>("CreatedTime")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("DeletedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset?>("DeletedTime")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("LastUpdatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset>("LastUpdatedTime")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<string>("LineName")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("WorkerCount")
+                        .HasMaxLength(50)
                         .HasColumnType("int");
 
-                    b.HasKey("LineID");
+                    b.HasKey("Id");
 
                     b.ToTable("ProductionLines");
                 });
@@ -566,24 +628,24 @@ namespace XuongMay.Repositories.Migrations
                 {
                     b.HasOne("XuongMay.Contract.Repositories.Entity.Product", "Product")
                         .WithMany("Orders")
-                        .HasForeignKey("ProductID");
+                        .HasForeignKey("ProductID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Product");
                 });
 
             modelBuilder.Entity("XuongMay.Contract.Repositories.Entity.OrderProductionLine", b =>
                 {
-                    b.HasOne("XuongMay.Contract.Repositories.Entity.ProductionLine", "ProductionLine")
-                        .WithMany("OrderProductionLines")
-                        .HasForeignKey("LineID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("XuongMay.Contract.Repositories.Entity.Order", "Order")
                         .WithMany("OrderProductionLines")
                         .HasForeignKey("OrderID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("XuongMay.Contract.Repositories.Entity.ProductionLine", "ProductionLine")
+                        .WithMany("OrderProductionLines")
+                        .HasForeignKey("ProductionLineId");
 
                     b.Navigation("Order");
 
@@ -592,9 +654,11 @@ namespace XuongMay.Repositories.Migrations
 
             modelBuilder.Entity("XuongMay.Contract.Repositories.Entity.Product", b =>
                 {
-                    b.HasOne("XuongMay.Contract.Repositories.Entity.ProductCategory", "Category")
+                    b.HasOne("XuongMay.Contract.Repositories.Entity.Category", "Category")
                         .WithMany("Products")
-                        .HasForeignKey("CategoryID");
+                        .HasForeignKey("CategoryID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Category");
                 });
@@ -608,6 +672,11 @@ namespace XuongMay.Repositories.Migrations
                     b.Navigation("UserInfo");
                 });
 
+            modelBuilder.Entity("XuongMay.Contract.Repositories.Entity.Category", b =>
+                {
+                    b.Navigation("Products");
+                });
+
             modelBuilder.Entity("XuongMay.Contract.Repositories.Entity.Order", b =>
                 {
                     b.Navigation("OrderProductionLines");
@@ -616,11 +685,6 @@ namespace XuongMay.Repositories.Migrations
             modelBuilder.Entity("XuongMay.Contract.Repositories.Entity.Product", b =>
                 {
                     b.Navigation("Orders");
-                });
-
-            modelBuilder.Entity("XuongMay.Contract.Repositories.Entity.ProductCategory", b =>
-                {
-                    b.Navigation("Products");
                 });
 
             modelBuilder.Entity("XuongMay.Contract.Repositories.Entity.ProductionLine", b =>

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace XuongMay.Repositories.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -35,28 +35,38 @@ namespace XuongMay.Repositories.Migrations
                 name: "ProductCategorys",
                 columns: table => new
                 {
-                    CategoryID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    CategoryName = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false)
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    CategoryID = table.Column<int>(type: "int", nullable: false),
+                    CategoryName = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastUpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DeletedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedTime = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    LastUpdatedTime = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    DeletedTime = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ProductCategorys", x => x.CategoryID);
+                    table.PrimaryKey("PK_ProductCategorys", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
                 name: "ProductionLines",
                 columns: table => new
                 {
-                    LineID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    LineName = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    LineCode = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    WorkerCount = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    LineName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    WorkerCount = table.Column<int>(type: "int", maxLength: 50, nullable: false),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastUpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DeletedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedTime = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    LastUpdatedTime = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    DeletedTime = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ProductionLines", x => x.LineID);
+                    table.PrimaryKey("PK_ProductionLines", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -108,22 +118,28 @@ namespace XuongMay.Repositories.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "SanPham",
+                name: "Products",
                 columns: table => new
                 {
-                    ProductID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ProductName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    CategoryID = table.Column<int>(type: "int", nullable: true)
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ProductName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CategoryID = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastUpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DeletedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedTime = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    LastUpdatedTime = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    DeletedTime = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SanPham", x => x.ProductID);
+                    table.PrimaryKey("PK_Products", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_SanPham_ProductCategorys_CategoryID",
+                        name: "FK_Products_ProductCategorys_CategoryID",
                         column: x => x.CategoryID,
                         principalTable: "ProductCategorys",
-                        principalColumn: "CategoryID");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -168,21 +184,27 @@ namespace XuongMay.Repositories.Migrations
                 name: "Orders",
                 columns: table => new
                 {
-                    OrderId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     OrderName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     StartTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EndTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ProductID = table.Column<int>(type: "int", nullable: true)
+                    ProductID = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastUpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DeletedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedTime = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    LastUpdatedTime = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    DeletedTime = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Orders", x => x.OrderId);
+                    table.PrimaryKey("PK_Orders", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Orders_SanPham_ProductID",
+                        name: "FK_Orders_Products_ProductID",
                         column: x => x.ProductID,
-                        principalTable: "SanPham",
-                        principalColumn: "ProductID");
+                        principalTable: "Products",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -298,8 +320,16 @@ namespace XuongMay.Repositories.Migrations
                 name: "OrderProductionLines",
                 columns: table => new
                 {
-                    OrderID = table.Column<int>(type: "int", nullable: false),
-                    LineID = table.Column<int>(type: "int", nullable: false)
+                    OrderID = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    LineID = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ProductionLineId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    Id = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastUpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DeletedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedTime = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    LastUpdatedTime = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    DeletedTime = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -308,14 +338,13 @@ namespace XuongMay.Repositories.Migrations
                         name: "FK_OrderProductionLines_Orders_OrderID",
                         column: x => x.OrderID,
                         principalTable: "Orders",
-                        principalColumn: "OrderId",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_OrderProductionLines_ProductionLines_LineID",
-                        column: x => x.LineID,
+                        name: "FK_OrderProductionLines_ProductionLines_ProductionLineId",
+                        column: x => x.ProductionLineId,
                         principalTable: "ProductionLines",
-                        principalColumn: "LineID",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
@@ -363,9 +392,9 @@ namespace XuongMay.Repositories.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrderProductionLines_LineID",
+                name: "IX_OrderProductionLines_ProductionLineId",
                 table: "OrderProductionLines",
-                column: "LineID");
+                column: "ProductionLineId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Orders_ProductID",
@@ -373,8 +402,8 @@ namespace XuongMay.Repositories.Migrations
                 column: "ProductID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SanPham_CategoryID",
-                table: "SanPham",
+                name: "IX_Products_CategoryID",
+                table: "Products",
                 column: "CategoryID");
         }
 
@@ -415,7 +444,7 @@ namespace XuongMay.Repositories.Migrations
                 name: "UserInfos");
 
             migrationBuilder.DropTable(
-                name: "SanPham");
+                name: "Products");
 
             migrationBuilder.DropTable(
                 name: "ProductCategorys");
