@@ -1,4 +1,6 @@
 using AutoMapper;
+using XuongMay.Contract.Repositories.Entity;
+using XuongMay.ModelViews.ProductionLineModelViews;
 
 namespace XuongMayBE.API.AutoMapper
 {
@@ -7,7 +9,7 @@ namespace XuongMayBE.API.AutoMapper
         public AutoMapperConfig()
         {
             //Create AutoMapper
-            
+            CreateMap<CreateProductionLineModelView, ProductionLine>();
         }
     }
 }
