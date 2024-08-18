@@ -1,10 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.Numerics;
+using XuongMay.Core.Base;
 
 namespace XuongMay.Contract.Repositories.Entity
 {
     [PrimaryKey(nameof(OrderID), nameof(LineID))]
-    public class OrderTask
+    public class OrderTask : BaseEntity
     {
         public string OrderID { get; set; }
         public string LineID { get; set; }

@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.Numerics;
-using XuongMay.Core.Base;
+﻿using XuongMay.Core.Base;
 
 namespace XuongMay.Contract.Repositories.Entity
 {
