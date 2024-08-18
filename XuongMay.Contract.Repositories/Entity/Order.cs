@@ -16,5 +16,6 @@ namespace XuongMay.Contract.Repositories.Entity
 
         [JsonIgnore]
         public virtual ICollection<OrderTask> OrderTask { get; set; } = new HashSet<OrderTask>();
+        public object OrderID { get; set; }
     }
 }

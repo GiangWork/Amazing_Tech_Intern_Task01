@@ -66,5 +66,30 @@ namespace XuongMay.Services.Service
             await _context.SaveChangesAsync();
             return true;
         }
+
+        public Task<OrderTask> CreateOrderTask(OrderTask orderTask)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<IEnumerable<OrderTask>> IOrderTaskService.GetAllOrderTasks()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<OrderTask?> UpdateOrderTask(string id, OrderTask orderTask)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task IOrderTaskService.UpdateOrderTask(string id, OrderTaskModelView request)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task IOrderTaskService.CreateOrderTask(OrderTaskModelView request)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
