@@ -11,5 +11,6 @@ namespace XuongMay.Contract.Repositories.Entity
         public string ProductID { get; set; }
         public virtual Product Product { get; set; }
         public virtual ICollection<OrderTask> OrderTask { get; set; } = new HashSet<OrderTask>();
+        public object OrderID { get; set; }
     }
 }
