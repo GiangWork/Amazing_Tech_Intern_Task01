@@ -4,10 +4,8 @@ using XuongMay.Core.Base;
 
 namespace XuongMay.Contract.Repositories.Entity
 {
-    public class ProductCategory : BaseEntity
+    public class Category : BaseEntity
     {
-        public int CategoryID { get; set; }
-
         [StringLength(255)]
         public string CategoryName { get; set; } = string.Empty;
 

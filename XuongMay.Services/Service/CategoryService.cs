@@ -18,44 +18,44 @@ namespace XuongMay.Services
             _mapper = mapper;
         }
 
-        public async Task<ProductCategory> CreateProductCategory(CategoryModelView request)
+        public async Task<Category> CreateCategory(CategoryModelView request)
         {
-            ProductCategory productCategory = _mapper.Map<ProductCategory>(request);
-            _context.Categorys.Add(productCategory);
+            Category Category = _mapper.Map<Category>(request);
+            _context.Categorys.Add(Category);
             await _context.SaveChangesAsync();
-            return productCategory;
+            return Category;
         }
 
-        public async Task<List<ProductCategory>> GetAllProductCategories()
+        public async Task<List<Category>> GetAllCategories()
         {
             return await _context.Categorys.ToListAsync();
         }
 
-        public async Task<ProductCategory> GetProductCategoryById(string id)
+        public async Task<Category> GetCategoryById(string id)
         {
             return await _context.Categorys.FirstOrDefaultAsync(pc => pc.Id == id);
         }
 
-        public async Task<ProductCategory> UpdateProductCategory(string id, CategoryModelView request)
+        public async Task<Category> UpdateCategory(string id, CategoryModelView request)
         {
-            ProductCategory productCategory = await _context.Categorys.FirstOrDefaultAsync(pc => pc.Id == id);
-            if (productCategory == null)
+            Category Category = await _context.Categorys.FirstOrDefaultAsync(pc => pc.Id == id);
+            if (Category == null)
             {
                 return null;
             }
-            productCategory.CategoryName = request.CategoryName;
+            Category.CategoryName = request.CategoryName;
             await _context.SaveChangesAsync();
-            return productCategory;
+            return Category;
         }
 
-        public async Task<bool> DeleteProductCategory(string id)
+        public async Task<bool> DeleteCategory(string id)
         {
-            ProductCategory productCategory = await _context.Categorys.FirstOrDefaultAsync(pc => pc.Id == id);
-            if (productCategory == null)
+            Category Category = await _context.Categorys.FirstOrDefaultAsync(pc => pc.Id == id);
+            if (Category == null)
             {
                 return false;
             }
-            _context.Categorys.Remove(productCategory);
+            _context.Categorys.Remove(Category);
             await _context.SaveChangesAsync();
             return true;
         }

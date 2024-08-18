@@ -32,7 +32,7 @@ namespace XuongMay.Repositories.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ProductCategorys",
+                name: "Categorys",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
@@ -47,7 +47,7 @@ namespace XuongMay.Repositories.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ProductCategorys", x => x.Id);
+                    table.PrimaryKey("PK_Categorys", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -135,9 +135,9 @@ namespace XuongMay.Repositories.Migrations
                 {
                     table.PrimaryKey("PK_Products", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Products_ProductCategorys_CategoryID",
+                        name: "FK_Products_Categorys_CategoryID",
                         column: x => x.CategoryID,
-                        principalTable: "ProductCategorys",
+                        principalTable: "Categorys",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -447,7 +447,7 @@ namespace XuongMay.Repositories.Migrations
                 name: "Products");
 
             migrationBuilder.DropTable(
-                name: "ProductCategorys");
+                name: "Categorys");
         }
     }
 }

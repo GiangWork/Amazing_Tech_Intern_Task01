@@ -5,10 +5,10 @@ namespace XuongMay.Contract.Services.Interface
 {
     public interface ICategoryService
     {
-        Task<ProductCategory> CreateProductCategory(CategoryModelView request);
-        Task<List<ProductCategory>> GetAllProductCategories();
-        Task<ProductCategory> GetProductCategoryById(string id);
-        Task<ProductCategory> UpdateProductCategory(string id, CategoryModelView request);
-        Task<bool> DeleteProductCategory(string id);
+        Task<Category> CreateCategory(CategoryModelView request);
+        Task<List<Category>> GetAllCategories();
+        Task<Category> GetCategoryById(string id);
+        Task<Category> UpdateCategory(string id, CategoryModelView request);
+        Task<bool> DeleteCategory(string id);
     }
 }

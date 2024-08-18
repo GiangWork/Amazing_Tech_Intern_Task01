@@ -12,12 +12,12 @@ namespace XuongMay.Repositories.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_Products_ProductCategorys_CategoryID",
+                name: "FK_Products_Categorys_CategoryID",
                 table: "Products");
 
             migrationBuilder.DropPrimaryKey(
-                name: "PK_ProductCategorys",
-                table: "ProductCategorys");
+                name: "PK_Categorys",
+                table: "Categorys");
 
             migrationBuilder.DropColumn(
                 name: "CreatedBy",
@@ -48,7 +48,7 @@ namespace XuongMay.Repositories.Migrations
                 table: "OrderProductionLines");
 
             migrationBuilder.RenameTable(
-                name: "ProductCategorys",
+                name: "Categorys",
                 newName: "Categorys");
 
             migrationBuilder.AddPrimaryKey(
@@ -78,7 +78,7 @@ namespace XuongMay.Repositories.Migrations
 
             migrationBuilder.RenameTable(
                 name: "Categorys",
-                newName: "ProductCategorys");
+                newName: "Categorys");
 
             migrationBuilder.AddColumn<string>(
                 name: "CreatedBy",
@@ -126,15 +126,15 @@ namespace XuongMay.Repositories.Migrations
                 defaultValue: new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)));
 
             migrationBuilder.AddPrimaryKey(
-                name: "PK_ProductCategorys",
-                table: "ProductCategorys",
+                name: "PK_Categorys",
+                table: "Categorys",
                 column: "Id");
 
             migrationBuilder.AddForeignKey(
-                name: "FK_Products_ProductCategorys_CategoryID",
+                name: "FK_Products_Categorys_CategoryID",
                 table: "Products",
                 column: "CategoryID",
-                principalTable: "ProductCategorys",
+                principalTable: "Categorys",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);
         }

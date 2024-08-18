@@ -1,6 +1,4 @@
 ﻿
-using System.ComponentModel.DataAnnotations;
-
 namespace XuongMay.ModelViews.ProductionLineModelViews
 {
     public class CreateProductionLineModelView

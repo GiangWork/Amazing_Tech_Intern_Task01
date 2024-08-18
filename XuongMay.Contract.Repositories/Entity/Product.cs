@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using XuongMay.Core.Base;
+﻿using XuongMay.Core.Base;
 
 namespace XuongMay.Contract.Repositories.Entity
 {
@@ -9,7 +8,7 @@ namespace XuongMay.Contract.Repositories.Entity
 
         // Foreign key
         public string CategoryID { get; set; }
-        public virtual ProductCategory Category { get; set; }
+        public virtual Category Category { get; set; }
         public virtual ICollection<Order> Orders { get; set; } = new HashSet<Order>();
     }
 }

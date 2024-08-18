@@ -269,9 +269,6 @@ namespace XuongMay.Repositories.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("CategoryID")
-                        .HasColumnType("int");
-
                     b.Property<string>("CategoryName")
                         .IsRequired()
                         .HasMaxLength(255)
@@ -334,6 +331,9 @@ namespace XuongMay.Repositories.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("StartTime")
                         .HasColumnType("datetime2");
 
@@ -344,7 +344,7 @@ namespace XuongMay.Repositories.Migrations
                     b.ToTable("Orders");
                 });
 
-            modelBuilder.Entity("XuongMay.Contract.Repositories.Entity.OrderProductionLine", b =>
+            modelBuilder.Entity("XuongMay.Contract.Repositories.Entity.OrderTask", b =>
                 {
                     b.Property<string>("OrderID")
                         .HasColumnType("nvarchar(450)");
@@ -355,11 +355,14 @@ namespace XuongMay.Repositories.Migrations
                     b.Property<string>("ProductionLineId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
                     b.HasKey("OrderID", "LineID");
 
                     b.HasIndex("ProductionLineId");
 
-                    b.ToTable("OrderProductionLines");
+                    b.ToTable("OrderTasks");
                 });
 
             modelBuilder.Entity("XuongMay.Contract.Repositories.Entity.Product", b =>
@@ -632,16 +635,16 @@ namespace XuongMay.Repositories.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("XuongMay.Contract.Repositories.Entity.OrderProductionLine", b =>
+            modelBuilder.Entity("XuongMay.Contract.Repositories.Entity.OrderTask", b =>
                 {
                     b.HasOne("XuongMay.Contract.Repositories.Entity.Order", "Order")
-                        .WithMany("OrderProductionLines")
+                        .WithMany("OrderTask")
                         .HasForeignKey("OrderID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("XuongMay.Contract.Repositories.Entity.ProductionLine", "ProductionLine")
-                        .WithMany("OrderProductionLines")
+                        .WithMany("OrderTask")
                         .HasForeignKey("ProductionLineId");
 
                     b.Navigation("Order");
@@ -676,7 +679,7 @@ namespace XuongMay.Repositories.Migrations
 
             modelBuilder.Entity("XuongMay.Contract.Repositories.Entity.Order", b =>
                 {
-                    b.Navigation("OrderProductionLines");
+                    b.Navigation("OrderTask");
                 });
 
             modelBuilder.Entity("XuongMay.Contract.Repositories.Entity.Product", b =>
@@ -686,7 +689,7 @@ namespace XuongMay.Repositories.Migrations
 
             modelBuilder.Entity("XuongMay.Contract.Repositories.Entity.ProductionLine", b =>
                 {
-                    b.Navigation("OrderProductionLines");
+                    b.Navigation("OrderTask");
                 });
 #pragma warning restore 612, 618
         }

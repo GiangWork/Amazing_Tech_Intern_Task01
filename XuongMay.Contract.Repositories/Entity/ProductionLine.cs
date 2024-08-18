@@ -8,6 +8,6 @@ namespace XuongMay.Contract.Repositories.Entity
         public string LineName { get; set; } = string.Empty;
         [StringLength(50)]
         public int WorkerCount { get; set; }
-        public virtual ICollection<OrderProductionLine> OrderProductionLines { get; set; } = new HashSet<OrderProductionLine>();
+        public virtual ICollection<OrderTask> OrderTask { get; set; } = new HashSet<OrderTask>();
     }
 }

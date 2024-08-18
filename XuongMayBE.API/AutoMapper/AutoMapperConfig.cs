@@ -12,7 +12,7 @@ namespace XuongMayBE.API.AutoMapper
             //Create AutoMapper
             CreateMap<CreateProductionLineModelView, ProductionLine>();
 
-            CreateMap<CategoryModelView, ProductCategory>();
+            CreateMap<CategoryModelView, Category>();
         }
     }
 }

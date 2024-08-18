@@ -15,46 +15,46 @@ namespace XuongMayBE.API.Controllers
             _categoryService = categoryService;
         }
 
-        [HttpPost("create_productCategory")]
-        public async Task<IActionResult> CreateProductCategory([FromBody] CategoryModelView request)
+        [HttpPost("create_Category")]
+        public async Task<IActionResult> CreateCategory([FromBody] CategoryModelView request)
         {
-            var productCategory = await _categoryService.CreateProductCategory(request);
-            return Ok(productCategory);
+            var Category = await _categoryService.CreateCategory(request);
+            return Ok(Category);
         }
 
-        [HttpGet("get_AllProductCategories")]
-        public async Task<IActionResult> GetAllProductCategories()
+        [HttpGet("get_AllCategories")]
+        public async Task<IActionResult> GetAllCategories()
         {
-            var productCategories = await _categoryService.GetAllProductCategories();
+            var productCategories = await _categoryService.GetAllCategories();
             return Ok(productCategories);
         }
 
-        [HttpGet("get_ProductCategoryById/{id}")]
-        public async Task<IActionResult> GetProductCategoryById(string id)
+        [HttpGet("get_CategoryById/{id}")]
+        public async Task<IActionResult> GetCategoryById(string id)
         {
-            var productCategory = await _categoryService.GetProductCategoryById(id);
-            if (productCategory == null)
+            var Category = await _categoryService.GetCategoryById(id);
+            if (Category == null)
             {
                 return NotFound();
             }
-            return Ok(productCategory);
+            return Ok(Category);
         }
 
-        [HttpPut("update_ProductCategory/{id}")]
-        public async Task<IActionResult> UpdateProductCategory(string id, [FromBody] CategoryModelView request)
+        [HttpPut("update_Category/{id}")]
+        public async Task<IActionResult> UpdateCategory(string id, [FromBody] CategoryModelView request)
         {
-            var productCategory = await _categoryService.UpdateProductCategory(id, request);
-            if (productCategory == null)
+            var Category = await _categoryService.UpdateCategory(id, request);
+            if (Category == null)
             {
                 return NotFound();
             }
-            return Ok(productCategory);
+            return Ok(Category);
         }
 
-        [HttpDelete("delete_ProductCategory/{id}")]
-        public async Task<IActionResult> DeleteProductCategory(string id)
+        [HttpDelete("delete_Category/{id}")]
+        public async Task<IActionResult> DeleteCategory(string id)
         {
-            var result = await _categoryService.DeleteProductCategory(id);
+            var result = await _categoryService.DeleteCategory(id);
             if (!result)
             {
                 return NotFound();

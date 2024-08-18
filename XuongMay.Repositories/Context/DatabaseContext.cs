@@ -21,10 +21,10 @@ namespace XuongMay.Repositories.Context
 
         //
         public virtual DbSet<Product> Products => Set<Product>();
-        public virtual DbSet<ProductCategory> Categorys => Set<ProductCategory>();
+        public virtual DbSet<Category> Categorys => Set<Category>();
         public virtual DbSet<ProductionLine> ProductionLines => Set<ProductionLine>();
         public virtual DbSet<Order> Orders => Set<Order>();
-        public virtual DbSet<OrderProductionLine> OrderProductionLines => Set<OrderProductionLine>();
+        public virtual DbSet<OrderTask> OrderTasks => Set<OrderTask>();
 
         public virtual DbSet<UserInfo> UserInfos => Set<UserInfo>();
     }

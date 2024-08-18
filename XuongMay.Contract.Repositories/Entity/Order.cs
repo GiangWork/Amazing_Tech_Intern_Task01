@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Numerics;
 using XuongMay.Core.Base;
 
 namespace XuongMay.Contract.Repositories.Entity
@@ -8,8 +9,9 @@ namespace XuongMay.Contract.Repositories.Entity
         public string OrderName { get; set; } = string.Empty;
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
+        public int Quantity { get; set; }
         public string ProductID { get; set; }
         public virtual Product Product { get; set; }
-        public virtual ICollection<OrderProductionLine> OrderProductionLines { get; set; } = new HashSet<OrderProductionLine>();
+        public virtual ICollection<OrderTask> OrderTask { get; set; } = new HashSet<OrderTask>();
     }
 }
