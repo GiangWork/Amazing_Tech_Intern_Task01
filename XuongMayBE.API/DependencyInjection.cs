@@ -49,6 +49,9 @@ namespace XuongMayBE.API
             services
                 //.AddScoped<IUserService, UserService>()
                 .AddScoped<IUserService, UserService>();
+            services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<IOrderTaskService, OrderTaskService>();
         }
 
         public static void AutoMapper(this IServiceCollection services)
