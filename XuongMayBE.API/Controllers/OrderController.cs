@@ -1,11 +1,7 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
-using XuongMay.Contract.Repositories.Entity;
+﻿using Microsoft.AspNetCore.Mvc;
 using XuongMay.Contract.Services.Interface;
-using XuongMay.ModelViews.OrderTaskModelView;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using XuongMay.ModelViews.OrderModelView;
+using XuongMay.ModelViews.PaginationModelView;
 
 namespace XuongMayBE.API.Controllers
 {
@@ -14,60 +10,48 @@ namespace XuongMayBE.API.Controllers
     public class OrderController : ControllerBase
     {
         private readonly IOrderService _orderService;
-        private readonly IMapper _mapper;
 
-        public OrderController(IOrderService orderService, IMapper mapper)
+        public OrderController(IOrderService orderService)
         {
             _orderService = orderService;
-            _mapper = mapper;
         }
 
         [HttpPost("create_Order")]
-        public async Task<IActionResult> CreateOrder([FromBody] OrderModelView request)
+        public async Task<IActionResult> CreateOrder([FromQuery] OrderModelView request)
         {
-            if (request == null)
-            {
-                return BadRequest("Invalid order data.");
-            }
-
-            var order = _mapper.Map<Order>(request);
-            var result = await _orderService.CreateOrder(order);
-            return CreatedAtAction(nameof(GetOrderById), new { id = result.OrderID }, _mapper.Map<OrderModelView>(result));
+            var Order = await _orderService.CreateOrder(request);
+            return Ok(Order);
         }
 
         [HttpGet("get_AllOrders")]
-        public async Task<IActionResult> GetAllOrders()
+        public async Task<IActionResult> GetAllOrder([FromQuery] PaginationModelView request)
         {
-            var orders = await _orderService.GetAllOrders();
-            return Ok(_mapper.Map<IEnumerable<OrderModelView>>(orders));
+            var pageNumber = request.pageNumber ?? 1;
+            var pageSize = request.pageSize ?? 2;
+            var Orders = await _orderService.GetAllOrders(pageNumber, pageSize);
+            return Ok(Orders);
         }
 
         [HttpGet("get_OrderById/{id}")]
         public async Task<IActionResult> GetOrderById(string id)
         {
-            var order = await _orderService.GetOrderById(id);
-            if (order == null)
+            var Order = await _orderService.GetOrderById(id);
+            if (Order == null)
             {
                 return NotFound();
             }
-            return Ok(_mapper.Map<OrderModelView>(order));
+            return Ok(Order);
         }
 
         [HttpPut("update_Order/{id}")]
-        public async Task<IActionResult> UpdateOrder(string id, [FromBody] OrderModelView request)
+        public async Task<IActionResult> UpdateOrder(string id, [FromQuery] OrderModelView request)
         {
-            if (request == null)
-            {
-                return BadRequest("Invalid order data.");
-            }
-
-            var order = _mapper.Map<Order>(request);
-            var result = await _orderService.UpdateOrder(id, order);
-            if (result == null)
+            var Order = await _orderService.UpdateOrder(id, request);
+            if (Order == null)
             {
                 return NotFound();
             }
-            return Ok(_mapper.Map<OrderModelView>(result));
+            return Ok(Order);
         }
 
         [HttpDelete("delete_Order/{id}")]
@@ -78,7 +62,7 @@ namespace XuongMayBE.API.Controllers
             {
                 return NotFound();
             }
-            return NoContent();
+            return Ok();
         }
     }
 }

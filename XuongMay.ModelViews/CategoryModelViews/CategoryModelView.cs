@@ -2,6 +2,6 @@
 {
     public class CategoryModelView
     {
-        public string? CategoryName { get; set; }
+        public string CategoryName { get; set; } = string.Empty;
     }
 }

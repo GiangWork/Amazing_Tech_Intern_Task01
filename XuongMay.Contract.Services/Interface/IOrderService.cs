@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using XuongMay.Contract.Repositories.Entity;
+using XuongMay.Core;
+using XuongMay.ModelViews.OrderModelView;
 
 namespace XuongMay.Contract.Services.Interface
 {
     public interface IOrderService
     {
-        Task<Order> CreateOrder(Order order);
-        Task<IEnumerable<Order>> GetAllOrders();
+        Task<Order> CreateOrder(OrderModelView request);
+        Task<BasePaginatedList<Order>> GetAllOrders(int pageNumber, int pageSize);
         Task<Order> GetOrderById(string id);
-        Task<Order> UpdateOrder(string id, Order order);
+        Task<Order> UpdateOrder(string id, OrderModelView request);
         Task<bool> DeleteOrder(string id);
     }
 }

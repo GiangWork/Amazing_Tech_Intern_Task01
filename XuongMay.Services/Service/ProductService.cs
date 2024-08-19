@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using XuongMay.Contract.Repositories.Entity;
 using XuongMay.Contract.Services.Interface;
+using XuongMay.Core;
 using XuongMay.ModelViews.ProductModelView;
 using XuongMay.Repositories.Context;
 
@@ -26,9 +27,15 @@ namespace XuongMay.Services.Service
             return Product;
         }
 
-        public async Task<List<Product>> GetAllProducts()
+        public async Task<BasePaginatedList<Product>> GetAllProducts(int pageNumber, int pageSize)
         {
-            return await _context.Products.ToListAsync();
+            var allProducts = await _context.Products.ToListAsync();
+            var totalItems = allProducts.Count();
+            var items = allProducts.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+
+            var paginatedList = new BasePaginatedList<Product>(items, totalItems, pageNumber, pageSize);
+
+            return paginatedList;
         }
 
         public async Task<Product> GetProductById(string id)

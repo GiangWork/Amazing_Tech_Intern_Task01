@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using XuongMay.ModelViews.AuthModelViews;
+using XuongMay.Services.Service;
 
 namespace XuongMayBE.API.Controllers
 {
@@ -7,19 +8,47 @@ namespace XuongMayBE.API.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        public AuthController() { }
+        private readonly IAuthService _authService;
 
-        [HttpGet("auth_account")]
-        public async Task<IActionResult> Login(LoginModelView model)
+        public AuthController(IAuthService authService)
         {
-            return Ok(); 
+            _authService = authService;
         }
 
-        [HttpPost("new_account")]
-        public async Task<IActionResult> Register()
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginModelView model)
         {
-            return Ok();
+            await Task.Delay(100);
+
+            if (!_authService.ValidateLoginModel(model, out var errorMessage))
+            {
+                return BadRequest(errorMessage);
+            }
+
+            var user = _authService.AuthenticateUser(model);
+            var token = _authService.GenerateJwtToken(user);
+
+            return Ok(new { Token = token });
         }
 
+        [HttpPost("register")]
+        public IActionResult Register([FromBody] LoginModelView model)
+        {
+            if (!_authService.ValidateRegisterModel(model, out var errorMessage))
+            {
+                return BadRequest(errorMessage);
+            }
+
+            try
+            {
+                _authService.RegisterUser(model);
+            }
+            catch (Exception ex)
+            {
+                return Conflict(ex.Message);
+            }
+
+            return Ok("User registered successfully");
+        }
     }
 }

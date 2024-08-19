@@ -1,0 +1,8 @@
+-------------1.SERVER
+Program.cs
+appsettings.json
+AuthController.cs
+
+-------------2.Service
+IAuthService
+AuthService

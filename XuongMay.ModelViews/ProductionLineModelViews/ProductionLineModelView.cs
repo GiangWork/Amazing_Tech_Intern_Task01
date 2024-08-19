@@ -1,7 +1,6 @@
-﻿
-namespace XuongMay.ModelViews.ProductionLineModelViews
+﻿namespace XuongMay.ModelViews.ProductionLineModelViews
 {
-    public class CreateProductionLineModelView
+    public class ProductionLineModelView
     {
         public string LineName { get; set; } = string.Empty;
         public int WorkerCount { get; set; }

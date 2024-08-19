@@ -15,5 +15,8 @@ namespace XuongMay.Services
         {
             services.AddScoped<IUnitOfWork, UnitOfWork>();
         }
+
+
+
     }
 }

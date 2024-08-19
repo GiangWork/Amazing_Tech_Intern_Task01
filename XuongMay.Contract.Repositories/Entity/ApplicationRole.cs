@@ -5,6 +5,7 @@ namespace XuongMay.Contract.Repositories.Entity
 {
     public class ApplicationRole : IdentityRole<Guid>
     {
+        public string RoleName { get; set; } = string.Empty;
         public string? CreatedBy { get; set; }
         public string? LastUpdatedBy { get; set; }
         public string? DeletedBy { get; set; }
