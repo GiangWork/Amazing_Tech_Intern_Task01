@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using XuongMay.Contract.Services.Interface;
 using XuongMay.ModelViews.CategoryModelView;
+using XuongMay.ModelViews.PaginationModelView;
 
 namespace XuongMayBE.API.Controllers
 {
@@ -16,16 +17,18 @@ namespace XuongMayBE.API.Controllers
         }
 
         [HttpPost("create_Category")]
-        public async Task<IActionResult> CreateCategory([FromBody] CategoryModelView request)
+        public async Task<IActionResult> CreateCategory([FromQuery] CategoryModelView request)
         {
             var Category = await _categoryService.CreateCategory(request);
             return Ok(Category);
         }
 
         [HttpGet("get_AllCategories")]
-        public async Task<IActionResult> GetAllCategories()
+        public async Task<IActionResult> GetAllCategories([FromQuery] PaginationModelView request)
         {
-            var productCategories = await _categoryService.GetAllCategories();
+            var pageNumber = request.pageNumber ?? 1;
+            var pageSize = request.pageSize ?? 2;
+            var productCategories = await _categoryService.GetAllCategories(pageNumber, pageSize);
             return Ok(productCategories);
         }
 
@@ -41,7 +44,7 @@ namespace XuongMayBE.API.Controllers
         }
 
         [HttpPut("update_Category/{id}")]
-        public async Task<IActionResult> UpdateCategory(string id, [FromBody] CategoryModelView request)
+        public async Task<IActionResult> UpdateCategory(string id, [FromQuery] CategoryModelView request)
         {
             var Category = await _categoryService.UpdateCategory(id, request);
             if (Category == null)

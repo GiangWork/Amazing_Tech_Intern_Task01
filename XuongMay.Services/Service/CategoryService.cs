@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using XuongMay.Contract.Repositories.Entity;
 using XuongMay.Contract.Services.Interface;
+using XuongMay.Core;
 using XuongMay.ModelViews.CategoryModelView;
 using XuongMay.Repositories.Context;
 
@@ -26,9 +27,14 @@ namespace XuongMay.Services
             return Category;
         }
 
-        public async Task<List<Category>> GetAllCategories()
+        public async Task<BasePaginatedList<Category>> GetAllCategories(int pageNumber, int pageSize)
         {
-            return await _context.Categorys.ToListAsync();
+            var allCategories = await _context.Categorys.ToListAsync();
+            var totalItems = allCategories.Count();
+            var items = allCategories.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+
+            var paginatedList = new BasePaginatedList<Category>(items, totalItems, pageNumber, pageSize);
+            return paginatedList;
         }
 
         public async Task<Category> GetCategoryById(string id)

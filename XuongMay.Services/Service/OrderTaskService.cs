@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using XuongMay.Contract.Repositories.Entity;
 using XuongMay.Contract.Services.Interface;
+using XuongMay.Core;
 using XuongMay.ModelViews.OrderTaskModelView;
 using XuongMay.Repositories.Context;
 
@@ -26,9 +27,13 @@ namespace XuongMay.Services.Service
             return OrderTask;
         }
 
-        public async Task<List<OrderTask>> GetAllOrderTasks()
+        public async Task<BasePaginatedList<OrderTask>> GetAllOrderTasks(int pageNumber, int pageSize)
         {
-            return await _context.OrderTasks.ToListAsync() ;
+            var allOrderTasks = await _context.OrderTasks.ToListAsync();
+            var totalItems = allOrderTasks.Count();
+            var items = allOrderTasks.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+            var paginatedList = new BasePaginatedList<OrderTask>(items, totalItems, pageNumber, pageSize);
+            return paginatedList;
         }
 
         public async Task<OrderTask> GetOrderTaskById(string id)

@@ -1,105 +1,68 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using XuongMay.Contract.Repositories.Entity;
+﻿using Microsoft.AspNetCore.Mvc;
+using XuongMay.Contract.Services.Interface;
+using XuongMay.ModelViews.PaginationModelView;
 using XuongMay.ModelViews.ProductionLineModelViews;
-using XuongMay.Repositories.Context;
 
 namespace XuongMayBE.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProductionLineController : ControllerBase
+    public class ProductionLineionLineController : ControllerBase
     {
-        private readonly DatabaseContext _context;
-        private readonly IMapper _mapper;
+        private readonly IProductionLineService _productLineService;
 
-        public ProductionLineController(DatabaseContext context, IMapper mapper)
+        public ProductionLineionLineController(IProductionLineService productLineService)
         {
-            _context = context;
-            _mapper = mapper;
+            _productLineService = productLineService;
 
         }
 
-        [HttpPost("create_productionLine")]
-        public async Task<IActionResult> CreateProductionLine([FromBody] CreateProductionLineModelView request)
+        [HttpPost("create_ProductionLine")]
+        public async Task<IActionResult> CreateProductionLine([FromQuery] ProductionLineModelView request)
         {
-            // Create new production line
-            CreateProductionLineModelView createProductionLineModelView = new()
-            {
-                LineName = request.LineName,
-                WorkerCount = request.WorkerCount
-            };
-
-            // Mapping createProductionLineModelView to ProductionLine
-            ProductionLine productionLine = _mapper.Map<ProductionLine>(createProductionLineModelView);
-
-            // Add new product line to database
-            _context.ProductionLines.Add(productionLine);
-
-            // Save change
-            await _context.SaveChangesAsync();
-
-            return Ok();
+            var ProductionLine = await _productLineService.CreateProductionLine(request);
+            return Ok(ProductionLine);
         }
 
-        [HttpGet("get_AllProductionLine")]
-        public async Task<IActionResult> GetAllProductionLine()
+        [HttpGet("get_AllProductionLines")]
+        public async Task<IActionResult> GetAllProductionLines([FromQuery] PaginationModelView request)
         {
-            List<ProductionLine> productionLines = await _context.ProductionLines.ToListAsync();
-
-            return Ok(productionLines);
+            var pageNumber = request.pageNumber ?? 1;
+            var pageSize = request.pageSize ?? 2;
+            var ProductionLines = await _productLineService.GetAllProductionLines(pageNumber, pageSize);
+            return Ok(ProductionLines);
         }
 
         [HttpGet("get_ProductionLineById/{id}")]
         public async Task<IActionResult> GetProductionLineById(string id)
         {
-            ProductionLine productionLine = await _context.ProductionLines.FirstOrDefaultAsync(pl => pl.Id == id);
-
-            // Return when not found production line
-            if (productionLine == null)
+            var ProductionLine = await _productLineService.GetProductionLineById(id);
+            if (ProductionLine == null)
             {
                 return NotFound();
             }
-
-            return Ok(productionLine);
+            return Ok(ProductionLine);
         }
 
         [HttpPut("update_ProductionLine/{id}")]
-        public async Task<IActionResult> UpdateProductionLine(string id, [FromBody] CreateProductionLineModelView request)
+        public async Task<IActionResult> UpdateProductionLine(string id, [FromQuery] ProductionLineModelView request)
         {
-            ProductionLine productionLine = await _context.ProductionLines.FirstOrDefaultAsync(pl => pl.Id == id);
-
-            // Return when not found production line
-            if (productionLine == null)
+            var ProductionLine = await _productLineService.UpdateProductionLine(id, request);
+            if (ProductionLine == null)
             {
                 return NotFound();
             }
-
-            // Update data
-            productionLine.LineName = request.LineName;
-            productionLine.WorkerCount = request.WorkerCount;
-
-            return Ok(productionLine);
+            return Ok(ProductionLine);
         }
 
         [HttpDelete("delete_ProductionLine/{id}")]
         public async Task<IActionResult> DeleteProductionLine(string id)
         {
-            ProductionLine productionLine = await _context.ProductionLines.FirstOrDefaultAsync(pl => pl.Id == id);
-
-            // Return when not found production line
-            if (productionLine == null)
+            var result = await _productLineService.DeleteProductionLine(id);
+            if (!result)
             {
                 return NotFound();
             }
-
-            // Delete data
-            _context.ProductionLines.Remove(productionLine);
-
-            // Save change
-            await _context.SaveChangesAsync();
-
             return Ok();
         }
     }
