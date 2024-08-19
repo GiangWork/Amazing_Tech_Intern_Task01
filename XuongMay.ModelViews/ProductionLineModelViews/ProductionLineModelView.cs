@@ -1,5 +1,4 @@
-﻿
-namespace XuongMay.ModelViews.ProductionLineModelViews
+﻿namespace XuongMay.ModelViews.ProductionLineModelViews
 {
     public class ProductionLineModelView
     {
