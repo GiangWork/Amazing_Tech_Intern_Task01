@@ -5,12 +5,10 @@ namespace XuongMay.Contract.Services.Interface
 {
     public interface IOrderTaskService
     {
-        Task<OrderTask> CreateOrderTask(OrderTask orderTask);
-        Task<IEnumerable<OrderTask>> GetAllOrderTasks();
-        Task<OrderTask?> GetOrderTaskById(string id);
-        Task<OrderTask?> UpdateOrderTask(string id, OrderTask orderTask);
+        Task<OrderTask> CreateOrderTask(OrderTaskModelView request);
+        Task<List<OrderTask>> GetAllOrderTasks();
+        Task<OrderTask> GetOrderTaskById(string id);
+        Task<OrderTask> UpdateOrderTask(string id, OrderTaskModelView request);
         Task<bool> DeleteOrderTask(string id);
-        Task UpdateOrderTask(string id, OrderTaskModelView request);
-        Task CreateOrderTask(OrderTaskModelView request);
     }
 }

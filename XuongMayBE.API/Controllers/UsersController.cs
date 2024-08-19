@@ -75,7 +75,7 @@ namespace XuongMayBE.API.Controllers
         {
             var result = await _userService.DeleteUser(id);
             if (!result)
-            {
+        {
                 return NotFound();
             }
 

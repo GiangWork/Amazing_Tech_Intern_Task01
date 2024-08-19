@@ -22,39 +22,37 @@ namespace XuongMayBE.API.Controllers
         [HttpPost("create_OrderTask")]
         public async Task<IActionResult> CreateOrderTask([FromBody] OrderTaskModelView request)
         {
-            var orderTask = _mapper.Map<OrderTask>(request);
-            var result = await _orderTaskService.CreateOrderTask(orderTask);
-            return Ok(_mapper.Map<OrderTaskModelView>(result));
+            var OrderTask = await _orderTaskService.CreateOrderTask(request);
+            return Ok(OrderTask);
         }
 
         [HttpGet("get_AllOrderTasks")]
         public async Task<IActionResult> GetAllOrderTasks()
         {
-            var orderTasks = await _orderTaskService.GetAllOrderTasks();
-            return Ok(_mapper.Map<IEnumerable<OrderTaskModelView>>(orderTasks));
+            var OrderTasks = await _orderTaskService.GetAllOrderTasks();
+            return Ok(OrderTasks);
         }
 
         [HttpGet("get_OrderTaskById/{id}")]
         public async Task<IActionResult> GetOrderTaskById(string id)
         {
-            var orderTask = await _orderTaskService.GetOrderTaskById(id);
-            if (orderTask == null)
+            var OrderTask = await _orderTaskService.GetOrderTaskById(id);
+            if (OrderTask == null)
             {
                 return NotFound();
             }
-            return Ok(_mapper.Map<OrderTaskModelView>(orderTask));
+            return Ok(OrderTask);
         }
 
         [HttpPut("update_OrderTask/{id}")]
         public async Task<IActionResult> UpdateOrderTask(string id, [FromBody] OrderTaskModelView request)
         {
-            var orderTask = _mapper.Map<OrderTask>(request);
-            var result = await _orderTaskService.UpdateOrderTask(id, orderTask);
-            if (result == null)
+            var OrderTask = await _orderTaskService.UpdateOrderTask(id, request);
+            if (OrderTask == null)
             {
                 return NotFound();
             }
-            return Ok(_mapper.Map<OrderTaskModelView>(result));
+            return Ok(OrderTask);
         }
 
         [HttpDelete("delete_OrderTask/{id}")]
