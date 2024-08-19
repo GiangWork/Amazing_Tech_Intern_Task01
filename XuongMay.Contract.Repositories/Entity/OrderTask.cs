@@ -7,8 +7,8 @@ namespace XuongMay.Contract.Repositories.Entity
     [PrimaryKey(nameof(OrderID), nameof(LineID))]
     public class OrderTask : BaseEntity
     {
-        public string OrderID { get; set; }
-        public string LineID { get; set; }
+        public required string OrderID { get; set; }
+        public required string LineID { get; set; }
         public int Quantity { get; set; }
 
         [JsonIgnore]

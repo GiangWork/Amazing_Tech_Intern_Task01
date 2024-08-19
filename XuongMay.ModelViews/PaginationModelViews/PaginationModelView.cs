@@ -1,5 +1,4 @@
-﻿
-namespace XuongMay.ModelViews.PaginationModelView
+﻿namespace XuongMay.ModelViews.PaginationModelView
 {
     public class PaginationModelView
     {

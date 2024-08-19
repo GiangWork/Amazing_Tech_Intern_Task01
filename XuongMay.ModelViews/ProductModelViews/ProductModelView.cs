@@ -3,6 +3,6 @@
     public class ProductModelView
     {
         public string? ProductName { get; set; }
-        public string CategoryID { get; set; }
+        public required string CategoryID { get; set; }
     }
 }
