@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Azure.Core;
+using Microsoft.AspNetCore.Mvc;
 using XuongMay.Contract.Services.Interface;
 using XuongMay.ModelViews.OrderTaskModelView;
+using XuongMay.ModelViews.PaginationModelView;
 
 namespace XuongMayBE.API.Controllers
 {
@@ -16,16 +18,18 @@ namespace XuongMayBE.API.Controllers
         }
 
         [HttpPost("create_OrderTask")]
-        public async Task<IActionResult> CreateOrderTask([FromBody] OrderTaskModelView request)
+        public async Task<IActionResult> CreateOrderTask([FromQuery] OrderTaskModelView request)
         {
             var OrderTask = await _orderTaskService.CreateOrderTask(request);
             return Ok(OrderTask);
         }
 
         [HttpGet("get_AllOrderTasks")]
-        public async Task<IActionResult> GetAllOrderTasks()
+        public async Task<IActionResult> GetAllOrderTasks([FromQuery] PaginationModelView request)
         {
-            var OrderTasks = await _orderTaskService.GetAllOrderTasks();
+            var pageNumber = request.pageNumber ?? 1;
+            var pageSize = request.pageSize ?? 2;
+            var OrderTasks = await _orderTaskService.GetAllOrderTasks(pageNumber, pageSize);
             return Ok(OrderTasks);
         }
 
@@ -41,7 +45,7 @@ namespace XuongMayBE.API.Controllers
         }
 
         [HttpPut("update_OrderTask/{id}")]
-        public async Task<IActionResult> UpdateOrderTask(string id, [FromBody] OrderTaskModelView request)
+        public async Task<IActionResult> UpdateOrderTask(string id, [FromQuery] OrderTaskModelView request)
         {
             var OrderTask = await _orderTaskService.UpdateOrderTask(id, request);
             if (OrderTask == null)
