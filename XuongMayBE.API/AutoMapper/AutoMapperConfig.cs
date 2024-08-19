@@ -1,7 +1,9 @@
 using AutoMapper;
 using XuongMay.Contract.Repositories.Entity;
 using XuongMay.ModelViews.CategoryModelView;
+using XuongMay.ModelViews.OrderTaskModelView;
 using XuongMay.ModelViews.ProductionLineModelViews;
+using XuongMay.ModelViews.ProductModelView;
 
 namespace XuongMayBE.API.AutoMapper
 {
@@ -10,9 +12,13 @@ namespace XuongMayBE.API.AutoMapper
         public AutoMapperConfig()
         {
             //Create AutoMapper
-            CreateMap<CreateProductionLineModelView, ProductionLine>();
+            CreateMap<ProductionLineModelView, ProductionLine>();
 
             CreateMap<CategoryModelView, Category>();
+
+            CreateMap<OrderTaskModelView, OrderTask>();
+
+            CreateMap<ProductModelView, Product>();
         }
     }
 }

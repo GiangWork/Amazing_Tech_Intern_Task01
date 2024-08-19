@@ -1,5 +1,5 @@
-﻿
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using XuongMay.Core.Base;
 
 namespace XuongMay.Contract.Repositories.Entity
@@ -9,6 +9,7 @@ namespace XuongMay.Contract.Repositories.Entity
         [StringLength(255)]
         public string CategoryName { get; set; } = string.Empty;
 
+        [JsonIgnore]
         public virtual ICollection<Product> Products { get; set; } = new HashSet<Product>();
     }
 }
