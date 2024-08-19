@@ -8,7 +8,7 @@ namespace XuongMay.Contract.Repositories.Entity
         public string ProductName { get; set; } = string.Empty;
 
         // Foreign key
-        public string CategoryID { get; set; }
+        public required string CategoryID { get; set; }
 
         [JsonIgnore]
         public virtual Category Category { get; set; }

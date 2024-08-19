@@ -9,7 +9,7 @@ namespace XuongMay.Contract.Repositories.Entity
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
         public int Quantity { get; set; }
-        public string ProductID { get; set; }
+        public required string ProductID { get; set; }
 
         [JsonIgnore]
         public virtual Product Product { get; set; }

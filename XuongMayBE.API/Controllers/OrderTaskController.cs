@@ -11,12 +11,10 @@ namespace XuongMayBE.API.Controllers
     public class OrderTaskController : ControllerBase
     {
         private readonly IOrderTaskService _orderTaskService;
-        private readonly IMapper _mapper;
 
-        public OrderTaskController(IOrderTaskService orderTaskService, IMapper mapper)
+        public OrderTaskController(IOrderTaskService orderTaskService)
         {
             _orderTaskService = orderTaskService;
-            _mapper = mapper;
         }
 
         [HttpPost("create_OrderTask")]
