@@ -1,14 +1,15 @@
 ﻿using XuongMay.Contract.Repositories.Entity;
 using XuongMay.ModelViews.AuthModelViews;
+using XuongMay.Repositories.Entity;
 
 namespace XuongMay.Services.Service
 {
     public interface IAuthService
     {
-        string GenerateJwtToken(User user);
-        User AuthenticateUser(LoginModelView model);
-        void RegisterUser(LoginModelView model);
-        bool ValidateLoginModel(LoginModelView model, out string errorMessage);
-        bool ValidateRegisterModel(LoginModelView model, out string errorMessage);
+        string GenerateJwtToken(ApplicationUser user);
+        string AuthenticateUser(LoginModelView request);
+        Task<string> CreateUser(LoginModelView request);
+        bool ValidateLogin(LoginModelView request, out string errorMessage);
+        bool ValidateRegister(LoginModelView request, out string errorMessage);
     }
 }

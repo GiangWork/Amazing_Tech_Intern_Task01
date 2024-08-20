@@ -50,6 +50,7 @@ namespace XuongMay.Services
                 return null;
             }
             Category.CategoryName = request.CategoryName;
+            _context.Categorys.Update(Category);
             await _context.SaveChangesAsync();
             return Category;
         }

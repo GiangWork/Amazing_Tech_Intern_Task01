@@ -54,6 +54,7 @@ namespace XuongMay.Services.Service
             Order.Quantity = request.Quantity;
             Order.StartTime = request.StartTime;
             Order.EndTime = request.EndTime;
+            _context.Orders.Update(Order);
             await _context.SaveChangesAsync();
             return Order;
         }

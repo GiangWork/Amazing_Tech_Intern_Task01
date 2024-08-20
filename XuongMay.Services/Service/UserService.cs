@@ -1,8 +1,7 @@
 ﻿using XuongMay.Contract.Repositories.Interface;
 using XuongMay.Contract.Services.Interface;
 using XuongMay.ModelViews.UserModelViews;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using XuongMay.Contract.Repositories.Entity;
 
 namespace XuongMay.Services.Service
 {
@@ -45,6 +44,7 @@ namespace XuongMay.Services.Service
         {
             // Sample implementation
             var user = new UserResponseModel { Id = id };
+            //_context.ApplicationRoles.Update(ApplicationRole);
             return Task.FromResult(user);
         }
 

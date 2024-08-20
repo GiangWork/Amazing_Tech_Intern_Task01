@@ -1,12 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using XuongMay.Contract.Services.Interface;
-using XuongMay.Core.Base;
 using XuongMay.ModelViews.UserModelViews;
-using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 
 namespace XuongMayBE.API.Controllers
 {
+    [Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
@@ -19,7 +18,6 @@ namespace XuongMayBE.API.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin,ChuyenTruong")]
         public async Task<IActionResult> GetAllUsers()
         {
             var users = await _userService.GetAllUsers();
@@ -27,7 +25,6 @@ namespace XuongMayBE.API.Controllers
         }
 
         [HttpGet("{id}")]
-        [Authorize(Roles = "Admin,ChuyenTruong")]
         public async Task<IActionResult> GetUserById(int id)
         {
             var user = await _userService.GetUserById(id);
@@ -38,21 +35,8 @@ namespace XuongMayBE.API.Controllers
             return Ok(user);
         }
 
-        [HttpPost]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> CreateUser([FromBody] UserCreateModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var user = await _userService.CreateUser(model);
-            return CreatedAtAction(nameof(GetUserById), new { id = user.Id }, user);
-        }
-
+        [Authorize(Roles = "Admin, User")]
         [HttpPut("{id}")]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateUser(int id, [FromBody] UserUpdateModel model)
         {
             if (!ModelState.IsValid)
@@ -70,7 +54,6 @@ namespace XuongMayBE.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteUser(int id)
         {
             var result = await _userService.DeleteUser(id);

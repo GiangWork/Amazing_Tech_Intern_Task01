@@ -27,9 +27,5 @@ namespace XuongMay.Repositories.Context
         public virtual DbSet<OrderTask> OrderTasks => Set<OrderTask>();
 
         public virtual DbSet<UserInfo> UserInfos => Set<UserInfo>();
-
-        // USERS
-        public virtual DbSet<User> Users => Set<User>();
-
     }
 }

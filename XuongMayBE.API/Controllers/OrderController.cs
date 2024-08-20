@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using XuongMay.Contract.Services.Interface;
 using XuongMay.ModelViews.OrderModelView;
 using XuongMay.ModelViews.PaginationModelView;
 
 namespace XuongMayBE.API.Controllers
 {
+    [Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class OrderController : ControllerBase
@@ -23,6 +25,7 @@ namespace XuongMayBE.API.Controllers
             return Ok(Order);
         }
 
+        [Authorize(Roles = "Admin, Line Manager")]
         [HttpGet("get_AllOrders")]
         public async Task<IActionResult> GetAllOrder([FromQuery] PaginationModelView request)
         {
@@ -32,6 +35,7 @@ namespace XuongMayBE.API.Controllers
             return Ok(Orders);
         }
 
+        [Authorize(Roles = "Admin, Line Manager")]
         [HttpGet("get_OrderById/{id}")]
         public async Task<IActionResult> GetOrderById(string id)
         {

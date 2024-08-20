@@ -2,6 +2,6 @@
 {
     public class RoleModelView
     {
-        public string RoleName { get; set; } = string.Empty;
+        public required string Name { get; set; } = string.Empty;
     }
 }

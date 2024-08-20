@@ -9,7 +9,6 @@ namespace XuongMay.Contract.Services.Interface
     {
         Task<IList<UserResponseModel>> GetAllUsers();
         Task<UserResponseModel> GetUserById(int id);
-        Task<UserResponseModel> CreateUser(UserCreateModel model);
         Task<UserResponseModel> UpdateUser(int id, UserUpdateModel model);
         Task<bool> DeleteUser(int id);
     }

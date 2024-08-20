@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using XuongMay.Contract.Services.Interface;
 using XuongMay.ModelViews.PaginationModelView;
 using XuongMay.ModelViews.ProductionLineModelViews;
 
 namespace XuongMayBE.API.Controllers
 {
+    [Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class ProductionLineionLineController : ControllerBase
@@ -24,6 +26,7 @@ namespace XuongMayBE.API.Controllers
             return Ok(ProductionLine);
         }
 
+        [Authorize(Roles = "Admin, Line Manager")]
         [HttpGet("get_AllProductionLines")]
         public async Task<IActionResult> GetAllProductionLines([FromQuery] PaginationModelView request)
         {
@@ -33,6 +36,7 @@ namespace XuongMayBE.API.Controllers
             return Ok(ProductionLines);
         }
 
+        [Authorize(Roles = "Admin, Line Manager")]
         [HttpGet("get_ProductionLineById/{id}")]
         public async Task<IActionResult> GetProductionLineById(string id)
         {

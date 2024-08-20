@@ -1,5 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.IdentityModel.Tokens.Jwt;
+using XuongMay.Contract.Repositories.Entity;
 using XuongMay.ModelViews.AuthModelViews;
+using XuongMay.Repositories.Context;
+using XuongMay.Repositories.Entity;
 using XuongMay.Services.Service;
 
 namespace XuongMayBE.API.Controllers
@@ -9,46 +15,119 @@ namespace XuongMayBE.API.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
+        private readonly IMapper _mapper;
+        private readonly DatabaseContext _context;
 
-        public AuthController(IAuthService authService)
+        public AuthController(IAuthService authService, IMapper mapper, DatabaseContext context)
         {
             _authService = authService;
+            _mapper = mapper;
+            _context = context;
         }
 
+        [AllowAnonymous]
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginModelView model)
+        public async Task<IActionResult> Login([FromQuery] LoginModelView request)
         {
-            await Task.Delay(100);
-
-            if (!_authService.ValidateLoginModel(model, out var errorMessage))
+            var authResult = _authService.AuthenticateUser(request);
+            if (authResult == "Login Success")
             {
-                return BadRequest(errorMessage);
+                ApplicationUser user = _context.ApplicationUsers.FirstOrDefault(f => f.UserName == request.UserName);
+                if (user == null)
+                {
+                    return BadRequest("User not found");
+                }
+
+                var existingToken = _context.ApplicationUserTokens
+                    .FirstOrDefault(t => t.UserId == user.Id);
+
+                string token;
+                DateTime now = DateTime.UtcNow;
+
+                if (existingToken == null || IsTokenExpired(existingToken.Value))
+                {
+                    // Token không tồn tại hoặc đã hết hạn, tạo token mới
+                    token = _authService.GenerateJwtToken(user);
+
+                    if (existingToken == null)
+                    {
+                        UserTokenModelView UserToken = new UserTokenModelView
+                        {
+                            UserId = user.Id,
+                            Value = token,
+                            LoginProvider = "Basic Authentication",
+                            Name = "Basic Authentication"
+                        };
+                        ApplicationUserTokens ApplicationUserToken = _mapper.Map<ApplicationUserTokens>(UserToken);
+
+                        await _context.ApplicationUserTokens.AddAsync(ApplicationUserToken);
+                    }
+                    else if (IsTokenExpired(existingToken.Value))
+                    {
+                        ApplicationUserTokens UpdateUserToken = _context.ApplicationUserTokens.FirstOrDefault(f => f.UserId == user.Id);
+                        UpdateUserToken.Value = token;
+                        UpdateUserToken.LastUpdatedTime = DateTime.UtcNow;
+                        _context.ApplicationUserTokens.Update(UpdateUserToken);
+                    }
+                }
+                else
+                {
+                    token = existingToken.Value;
+                }
+
+                ApplicationUserLogins UserLoginHistory = _context.ApplicationUserLogins.FirstOrDefault(f => f.UserId == user.Id);
+
+                if (UserLoginHistory == null)
+                {
+                    UserLoginModelView UserLogin = new UserLoginModelView
+                    {
+                        UserId = user.Id,
+                        ProviderKey = token,
+                        LoginProvider = "Basic Authentication"
+                    };
+                    ApplicationUserLogins ApplicationUserLogin = _mapper.Map<ApplicationUserLogins>(UserLogin);
+
+                    await _context.ApplicationUserLogins.AddAsync(ApplicationUserLogin);
+                }
+                else
+                {
+                    ApplicationUserLogins UpdateUserLogin = _context.ApplicationUserLogins.FirstOrDefault(f => f.UserId == user.Id);
+                    UpdateUserLogin.LastUpdatedTime = DateTime.UtcNow;
+                    _context.ApplicationUserLogins.Update(UpdateUserLogin);
+                }
+
+                await _context.SaveChangesAsync();
+                
+                return Ok(new { Message = "Login Success", Token = token });
             }
 
-            var user = _authService.AuthenticateUser(model);
-            var token = _authService.GenerateJwtToken(user);
-
-            return Ok(new { Token = token });
+            return BadRequest(authResult);
         }
 
+        [AllowAnonymous]
         [HttpPost("register")]
-        public IActionResult Register([FromBody] LoginModelView model)
+        public async Task<IActionResult> Register([FromQuery] LoginModelView request)
         {
-            if (!_authService.ValidateRegisterModel(model, out var errorMessage))
+            if (await _authService.CreateUser(request) == "Registration successful")
             {
-                return BadRequest(errorMessage);
+                return Ok("User registered successfully");
             }
 
-            try
+            return BadRequest(_authService.CreateUser(request));
+        }
+
+        private bool IsTokenExpired(string token)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var jwtToken = tokenHandler.ReadToken(token) as JwtSecurityToken;
+
+            if (jwtToken == null)
             {
-                _authService.RegisterUser(model);
-            }
-            catch (Exception ex)
-            {
-                return Conflict(ex.Message);
+                return true; // Token không hợp lệ
             }
 
-            return Ok("User registered successfully");
+            // Kiểm tra thời gian hết hạn
+            return jwtToken.ValidTo < DateTime.UtcNow;
         }
     }
 }

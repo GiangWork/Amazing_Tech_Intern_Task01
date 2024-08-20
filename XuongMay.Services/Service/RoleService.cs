@@ -49,7 +49,8 @@ namespace XuongMay.Services.Service
             {
                 return null;
             }
-            ApplicationRole.RoleName = request.RoleName;
+            ApplicationRole.Name = request.Name;
+            _context.ApplicationRoles.Update(ApplicationRole);
             await _context.SaveChangesAsync();
             return ApplicationRole;
         }

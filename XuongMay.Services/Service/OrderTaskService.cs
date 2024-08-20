@@ -51,6 +51,7 @@ namespace XuongMay.Services.Service
             OrderTask.OrderID = request.OrderID;
             OrderTask.LineID = request.LineID;
             OrderTask.Quantity = request.Quantity;
+            _context.OrderTasks.Update(OrderTask);
             await _context.SaveChangesAsync();
             return OrderTask;
         }

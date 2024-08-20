@@ -52,6 +52,7 @@ namespace XuongMay.Services.Service
             }
             Product.ProductName = request.ProductName;
             Product.CategoryID = request.CategoryID;
+            _context.Products.Update(Product);
             await _context.SaveChangesAsync();
             return Product;
         }

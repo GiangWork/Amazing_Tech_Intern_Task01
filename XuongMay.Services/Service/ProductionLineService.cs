@@ -51,6 +51,7 @@ namespace XuongMay.Services.Service
             }
             ProductionLine.LineName = request.LineName;
             ProductionLine.WorkerCount = request.WorkerCount;
+            _context.ProductionLines.Update(ProductionLine);
             await _context.SaveChangesAsync();
             return ProductionLine;
         }
