@@ -23,7 +23,8 @@ namespace XuongMayBE.API.Controllers
         public async Task<IActionResult> CreateCategory([FromQuery] CategoryModelView request)
         {
             var Category = await _categoryService.CreateCategory(request);
-            return Ok(Category);
+
+            return Ok(new { Message = "Create Success" , Category });
         }
 
         [HttpGet("get_AllCategories")]
@@ -31,7 +32,12 @@ namespace XuongMayBE.API.Controllers
         {
             var pageNumber = request.pageNumber ?? 1;
             var pageSize = request.pageSize ?? 2;
+
             var productCategories = await _categoryService.GetAllCategories(pageNumber, pageSize);
+
+            if (productCategories == null)
+                return NotFound(new { Message = "No Result" });
+
             return Ok(productCategories);
         }
 
@@ -41,8 +47,9 @@ namespace XuongMayBE.API.Controllers
             var Category = await _categoryService.GetCategoryById(id);
             if (Category == null)
             {
-                return NotFound();
+                return NotFound(new { Message = "No Result" });
             }
+
             return Ok(Category);
         }
 
@@ -52,9 +59,9 @@ namespace XuongMayBE.API.Controllers
             var Category = await _categoryService.UpdateCategory(id, request);
             if (Category == null)
             {
-                return NotFound();
+                return BadRequest(new { Message = "Update Fail" });
             }
-            return Ok(Category);
+            return Ok(new { Message = "Update Success", Category });
         }
 
         [HttpDelete("delete_Category/{id}")]
@@ -63,9 +70,9 @@ namespace XuongMayBE.API.Controllers
             var result = await _categoryService.DeleteCategory(id);
             if (!result)
             {
-                return NotFound();
+                return BadRequest(new { Message = "Delete Fail" });
             }
-            return Ok();
+            return Ok(new { Message = "Delete Success" });
         }
     }
 }

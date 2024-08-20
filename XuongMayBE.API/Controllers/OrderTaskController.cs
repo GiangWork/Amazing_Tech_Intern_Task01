@@ -20,7 +20,7 @@ namespace XuongMayBE.API.Controllers
         public async Task<IActionResult> CreateOrderTask([FromQuery] OrderTaskModelView request)
         {
             var OrderTask = await _orderTaskService.CreateOrderTask(request);
-            return Ok(OrderTask);
+            return Ok(new { Message = "Create Success", OrderTask });
         }
 
         [HttpGet("get_AllOrderTasks")]
@@ -29,6 +29,8 @@ namespace XuongMayBE.API.Controllers
             var pageNumber = request.pageNumber ?? 1;
             var pageSize = request.pageSize ?? 2;
             var OrderTasks = await _orderTaskService.GetAllOrderTasks(pageNumber, pageSize);
+            if (OrderTasks == null)
+                return NotFound(new { Message = "No Result" });
             return Ok(OrderTasks);
         }
 
@@ -38,7 +40,7 @@ namespace XuongMayBE.API.Controllers
             var OrderTask = await _orderTaskService.GetOrderTaskById(id);
             if (OrderTask == null)
             {
-                return NotFound();
+                return NotFound(new { Message = "No Result" });
             }
             return Ok(OrderTask);
         }
@@ -49,9 +51,9 @@ namespace XuongMayBE.API.Controllers
             var OrderTask = await _orderTaskService.UpdateOrderTask(id, request);
             if (OrderTask == null)
             {
-                return NotFound();
+                return BadRequest(new { Message = "Update Fail" });
             }
-            return Ok(OrderTask);
+            return Ok(new { Message = "Update Success", OrderTask });
         }
 
         [HttpDelete("delete_OrderTask/{id}")]
@@ -60,9 +62,9 @@ namespace XuongMayBE.API.Controllers
             var result = await _orderTaskService.DeleteOrderTask(id);
             if (!result)
             {
-                return NotFound();
+                return BadRequest(new { Message = "Delete Fail" });
             }
-            return Ok();
+            return Ok(new { Message = "Delete Success" });
         }
     }
 }

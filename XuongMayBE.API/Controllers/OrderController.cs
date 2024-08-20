@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using XuongMay.Contract.Repositories.Entity;
 using XuongMay.Contract.Services.Interface;
 using XuongMay.ModelViews.OrderModelView;
 using XuongMay.ModelViews.PaginationModelView;
@@ -22,7 +23,7 @@ namespace XuongMayBE.API.Controllers
         public async Task<IActionResult> CreateOrder([FromQuery] OrderModelView request)
         {
             var Order = await _orderService.CreateOrder(request);
-            return Ok(Order);
+            return Ok(new { Message = "Create success", Order });
         }
 
         [Authorize(Roles = "Admin, Line Manager")]
@@ -32,6 +33,8 @@ namespace XuongMayBE.API.Controllers
             var pageNumber = request.pageNumber ?? 1;
             var pageSize = request.pageSize ?? 2;
             var Orders = await _orderService.GetAllOrders(pageNumber, pageSize);
+            if (Orders == null)
+                return NotFound(new { Message = "No Result" });
             return Ok(Orders);
         }
 
@@ -42,7 +45,7 @@ namespace XuongMayBE.API.Controllers
             var Order = await _orderService.GetOrderById(id);
             if (Order == null)
             {
-                return NotFound();
+                return NotFound(new { Message = "No Result" });
             }
             return Ok(Order);
         }
@@ -53,9 +56,9 @@ namespace XuongMayBE.API.Controllers
             var Order = await _orderService.UpdateOrder(id, request);
             if (Order == null)
             {
-                return NotFound();
+                return BadRequest(new { Message = "Update Fail" });
             }
-            return Ok(Order);
+            return Ok(new { Message = "Update Success", Order });
         }
 
         [HttpDelete("delete_Order/{id}")]
@@ -64,9 +67,9 @@ namespace XuongMayBE.API.Controllers
             var result = await _orderService.DeleteOrder(id);
             if (!result)
             {
-                return NotFound();
+                return BadRequest(new { Message = "Delete Fail" });
             }
-            return Ok();
+            return Ok(new { Message = "Delete Success" });
         }
     }
 }

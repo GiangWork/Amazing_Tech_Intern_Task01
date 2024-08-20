@@ -33,11 +33,15 @@ namespace XuongMay.Services.Service
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_configuration["JwtSettings:SecretKey"]);
+
+            var role = _userManager.GetRolesAsync(user).Result.FirstOrDefault();
+
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new[] {
                     new Claim(ClaimTypes.Name, user.UserName),
-                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
+                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                    new Claim(ClaimTypes.Role, role)
                 }),
                 //Time JWT token expire is set in appseting.json (1 day)
                 Expires = DateTime.UtcNow.AddMinutes(int.Parse(_configuration["JwtSettings:ExpirationMinutes"])),
@@ -77,10 +81,10 @@ namespace XuongMay.Services.Service
             }
             else
             {
-                return "Registration fail";
+                return "Registration Fail";
             }    
 
-            return "Registration successful";
+            return "Registration Success";
         }
 
         public bool ValidateLogin(LoginModelView request, out string errorMessage)

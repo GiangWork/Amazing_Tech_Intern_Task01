@@ -23,7 +23,7 @@ namespace XuongMayBE.API.Controllers
         public async Task<IActionResult> CreateProductionLine([FromQuery] ProductionLineModelView request)
         {
             var ProductionLine = await _productLineService.CreateProductionLine(request);
-            return Ok(ProductionLine);
+            return Ok(new { Message = "Create Success", ProductionLine });
         }
 
         [Authorize(Roles = "Admin, Line Manager")]
@@ -33,6 +33,8 @@ namespace XuongMayBE.API.Controllers
             var pageNumber = request.pageNumber ?? 1;
             var pageSize = request.pageSize ?? 2;
             var ProductionLines = await _productLineService.GetAllProductionLines(pageNumber, pageSize);
+            if (ProductionLines == null)
+                return NotFound(new { Message = "No Result" });
             return Ok(ProductionLines);
         }
 
@@ -43,7 +45,7 @@ namespace XuongMayBE.API.Controllers
             var ProductionLine = await _productLineService.GetProductionLineById(id);
             if (ProductionLine == null)
             {
-                return NotFound();
+                return NotFound(new { Message = "No Result" });
             }
             return Ok(ProductionLine);
         }
@@ -54,9 +56,9 @@ namespace XuongMayBE.API.Controllers
             var ProductionLine = await _productLineService.UpdateProductionLine(id, request);
             if (ProductionLine == null)
             {
-                return NotFound();
+                return BadRequest(new { Message = "Update Fail" });
             }
-            return Ok(ProductionLine);
+            return Ok(new { Message = "Update Success", ProductionLine });
         }
 
         [HttpDelete("delete_ProductionLine/{id}")]
@@ -65,9 +67,9 @@ namespace XuongMayBE.API.Controllers
             var result = await _productLineService.DeleteProductionLine(id);
             if (!result)
             {
-                return NotFound();
+                return BadRequest(new { Message = "Delete Fail" });
             }
-            return Ok();
+            return Ok(new { Message = "Delete Success" });
         }
     }
 }

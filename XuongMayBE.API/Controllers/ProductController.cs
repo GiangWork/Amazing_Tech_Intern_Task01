@@ -22,7 +22,7 @@ namespace XuongMayBE.API.Controllers
         public async Task<IActionResult> CreateProduct([FromQuery] ProductModelView request)
         {
             var Product = await _productService.CreateProduct(request);
-            return Ok(Product);
+            return Ok(new { Message = "Create Success", Product });
         }
 
         [HttpGet("get_AllProducts")]
@@ -31,6 +31,8 @@ namespace XuongMayBE.API.Controllers
             var pageNumber = request.pageNumber ?? 1;
             var pageSize = request.pageSize ?? 2;
             var Products = await _productService.GetAllProducts(pageNumber, pageSize);
+            if (Products == null)
+                return NotFound(new { Message = "No Result" });
             return Ok(Products);
         }
 
@@ -40,7 +42,7 @@ namespace XuongMayBE.API.Controllers
             var Product = await _productService.GetProductById(id);
             if (Product == null)
             {
-                return NotFound();
+                return NotFound(new { Message = "No Result" });
             }
             return Ok(Product);
         }
@@ -51,9 +53,9 @@ namespace XuongMayBE.API.Controllers
             var Product = await _productService.UpdateProduct(id, request);
             if (Product == null)
             {
-                return NotFound();
+                return BadRequest(new { Message = "Update Fail" });
             }
-            return Ok(Product);
+            return Ok(new { Message = "Update Success", Product });
         }
 
         [HttpDelete("delete_Product/{id}")]
@@ -62,9 +64,9 @@ namespace XuongMayBE.API.Controllers
             var result = await _productService.DeleteProduct(id);
             if (!result)
             {
-                return NotFound();
+                return BadRequest(new { Message = "Delete Fail" });
             }
-            return Ok();
+            return Ok(new { Message = "Delete Success" });
         }
     }
 }

@@ -69,7 +69,7 @@ namespace XuongMayBE.API
         {
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "API", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Xuong May API", Version = "v1" });
 
                 // Cấu hình Authorization
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme

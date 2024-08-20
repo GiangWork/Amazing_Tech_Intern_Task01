@@ -22,7 +22,7 @@ namespace XuongMayBE.API.Controllers
         public async Task<IActionResult> CreateRole([FromQuery] RoleModelView request)
         {
             var Role = await _roleService.CreateRole(request);
-            return Ok(Role);
+            return Ok(new { Message = "Create Success", Role });
         }
 
         [HttpGet("get_AllRoles")]
@@ -31,6 +31,8 @@ namespace XuongMayBE.API.Controllers
             var pageNumber = request.pageNumber ?? 1;
             var pageSize = request.pageSize ?? 2;
             var productRoles = await _roleService.GetAllRoles(pageNumber, pageSize);
+            if (productRoles == null)
+                return NotFound(new { Message = "No Result" });
             return Ok(productRoles);
         }
 
@@ -40,7 +42,7 @@ namespace XuongMayBE.API.Controllers
             var Role = await _roleService.GetRoleById(id);
             if (Role == null)
             {
-                return NotFound();
+                return NotFound(new { Message = "No Result" });
             }
             return Ok(Role);
         }
@@ -51,9 +53,9 @@ namespace XuongMayBE.API.Controllers
             var Role = await _roleService.UpdateRole(id, request);
             if (Role == null)
             {
-                return NotFound();
+                return BadRequest(new { Message = "Update Fail" });
             }
-            return Ok(Role);
+            return Ok(new { Message = "Update Success", Role });
         }
 
         [HttpDelete("delete_Role/{id}")]
@@ -62,9 +64,9 @@ namespace XuongMayBE.API.Controllers
             var result = await _roleService.DeleteRole(id);
             if (!result)
             {
-                return NotFound();
+                return BadRequest(new { Message = "Delete Fail" });
             }
-            return Ok();
+            return Ok(new { Message = "Delete Success" });
         }
     }
 }
