@@ -2,6 +2,8 @@
 using XuongMay.Contract.Services.Interface;
 using XuongMay.ModelViews.UserModelViews;
 using Microsoft.AspNetCore.Authorization;
+using System;
+using XuongMay.ModelViews.PaginationModelView;
 
 namespace XuongMayBE.API.Controllers
 {
@@ -17,15 +19,19 @@ namespace XuongMayBE.API.Controllers
             _userService = userService;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAllUsers()
+        [HttpGet("getAll_User")]
+        public async Task<IActionResult> GetAllUsers([FromQuery] PaginationModelView request)
         {
-            var users = await _userService.GetAllUsers();
+            var pageNumber = request.pageNumber ?? 1;
+            var pageSize = request.pageSize ?? 2;
+            var users = await _userService.GetAllUsers(pageNumber, pageSize);
+            if (users == null)
+                return NotFound(new { Message = "No Result" });
             return Ok(users);
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetUserById(int id)
+        public async Task<IActionResult> GetUserById(Guid id)
         {
             var user = await _userService.GetUserById(id);
             if (user == null)
@@ -37,7 +43,7 @@ namespace XuongMayBE.API.Controllers
 
         [Authorize(Roles = "Admin, User")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUser(int id, [FromBody] UserUpdateModel model)
+        public async Task<IActionResult> UpdateUser(Guid id, [FromBody] UserUpdateModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -54,11 +60,11 @@ namespace XuongMayBE.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser(int id)
+        public async Task<IActionResult> DeleteUser(Guid id)
         {
             var result = await _userService.DeleteUser(id);
             if (!result)
-        {
+            {
                 return NotFound();
             }
 
