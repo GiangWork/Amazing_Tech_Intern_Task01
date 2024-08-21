@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Security.Claims;
+using XuongMay.Contract.Repositories.Entity;
 using XuongMay.Core;
 using XuongMay.ModelViews.UserModelViews;
 
@@ -9,7 +9,7 @@ namespace XuongMay.Contract.Services.Interface
     {
         Task<BasePaginatedList<UserResponseModel>> GetAllUsers(int pageNumber, int pageSize);
         Task<UserResponseModel> GetUserById(Guid id);
-        Task<UserResponseModel> UpdateUser(Guid id, UserUpdateModel model);
+        Task<UserInfo> UpdateUserInfo(UserInfoModel request, ClaimsPrincipal userClaims);
         Task<bool> DeleteUser(Guid id);
     }
 }

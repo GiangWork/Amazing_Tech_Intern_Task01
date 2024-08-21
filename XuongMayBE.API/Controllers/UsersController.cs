@@ -2,12 +2,10 @@
 using XuongMay.Contract.Services.Interface;
 using XuongMay.ModelViews.UserModelViews;
 using Microsoft.AspNetCore.Authorization;
-using System;
 using XuongMay.ModelViews.PaginationModelView;
 
 namespace XuongMayBE.API.Controllers
 {
-    [Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
@@ -19,6 +17,7 @@ namespace XuongMayBE.API.Controllers
             _userService = userService;
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet("getAll_User")]
         public async Task<IActionResult> GetAllUsers([FromQuery] PaginationModelView request)
         {
@@ -30,45 +29,46 @@ namespace XuongMayBE.API.Controllers
             return Ok(users);
         }
 
-        [HttpGet("{id}")]
+        [Authorize(Roles = "Admin")]
+        [HttpGet("get_UserById/{id}")]
         public async Task<IActionResult> GetUserById(Guid id)
         {
             var user = await _userService.GetUserById(id);
             if (user == null)
             {
-                return NotFound();
+                return NotFound(new { Message = "No Result" });
             }
             return Ok(user);
         }
 
-        [Authorize(Roles = "Admin, User")]
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUser(Guid id, [FromBody] UserUpdateModel model)
+        [Authorize]
+        [HttpPut("update_UserInfo")]
+        public async Task<IActionResult> UpdateUserInfo([FromQuery] UserInfoModel request)
         {
-            if (!ModelState.IsValid)
+            var userClaims = HttpContext.User;
+            var result = await _userService.UpdateUserInfo(request, userClaims);
+
+            if (result == null)
             {
-                return BadRequest(ModelState);
+                // Trả về NotFound nếu người dùng không tìm thấy hoặc không có quyền
+                return NotFound(new { Message = "User not found or user info not available." });
             }
 
-            var updatedUser = await _userService.UpdateUser(id, model);
-            if (updatedUser == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(updatedUser);
+            // Trả về thông tin đã cập nhật
+            return Ok(new { Message = "Update success", result });
         }
 
-        [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
+        [HttpDelete("delete_User/{id}")]
         public async Task<IActionResult> DeleteUser(Guid id)
         {
             var result = await _userService.DeleteUser(id);
             if (!result)
             {
-                return NotFound();
+                return BadRequest(new { Message = "Delete Fail" });
             }
 
-            return NoContent();
+            return Ok(new { Message = "Delete Success" });
         }
     }
 }

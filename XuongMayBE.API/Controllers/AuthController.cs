@@ -32,7 +32,7 @@ namespace XuongMayBE.API.Controllers
             var authResult = _authService.AuthenticateUser(request);
             if (authResult == "Login Success")
             {
-                ApplicationUser user = _context.ApplicationUsers.FirstOrDefault(f => f.UserName == request.UserName);
+                var user = _context.ApplicationUsers.FirstOrDefault(f => f.UserName == request.UserName);
                 if (user == null)
                 {
                     return BadRequest("User not found");
@@ -115,6 +115,22 @@ namespace XuongMayBE.API.Controllers
             }
 
             return BadRequest(new { Message = resultMessage });
+        }
+
+        [Authorize]
+        [HttpPost("change_Password")]
+        public async Task<IActionResult> ChangePassword([FromQuery] ChangePasswordModelView model)
+        {
+            var userClaims = HttpContext.User;
+            var result = await _authService.ChangePassword(model, userClaims);
+            if (result == "Password changed successfully.")
+            {
+                return Ok(new { Message = result });
+            }
+            else
+            {
+                return BadRequest(new { Message = result });
+            }
         }
 
         private bool IsTokenExpired(string token)

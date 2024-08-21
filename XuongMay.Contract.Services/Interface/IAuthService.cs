@@ -1,4 +1,5 @@
-﻿using XuongMay.Contract.Repositories.Entity;
+﻿using System.Security.Claims;
+using XuongMay.Contract.Repositories.Entity;
 using XuongMay.ModelViews.AuthModelViews;
 using XuongMay.Repositories.Entity;
 
@@ -11,5 +12,6 @@ namespace XuongMay.Services.Service
         Task<string> CreateUser(RegisterModelView request);
         string ValidateLogin(LoginModelView request);
         string ValidateRegister(RegisterModelView request);
+        Task<string> ChangePassword(ChangePasswordModelView request, ClaimsPrincipal userClaims);
     }
 }

@@ -62,7 +62,7 @@ namespace XuongMay.Services
 
         public async Task<bool> DeleteCategory(string id)
         {
-            Category Category = await _context.Categorys.FirstOrDefaultAsync(pc => pc.Id == id);
+            var Category = await _context.Categorys.FirstOrDefaultAsync(pc => pc.Id == id);
             if (Category == null)
             {
                 return false;

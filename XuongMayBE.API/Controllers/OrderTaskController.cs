@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using XuongMay.Contract.Services.Interface;
 using XuongMay.ModelViews.OrderTaskModelView;
 using XuongMay.ModelViews.PaginationModelView;
 
 namespace XuongMayBE.API.Controllers
 {
+    [Authorize(Roles = "Admin, Line Manager")]
     [Route("api/[controller]")]
     [ApiController]
     public class OrderTaskController : ControllerBase

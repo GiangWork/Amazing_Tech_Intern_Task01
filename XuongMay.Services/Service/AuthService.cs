@@ -76,6 +76,17 @@ namespace XuongMay.Services.Service
             {
                 await _context.SaveChangesAsync();
 
+                // Tạo và lưu đối tượng UserInfo
+                UserInfo userInfo = new UserInfo();
+
+                _context.UserInfos.Add(userInfo);
+                await _context.SaveChangesAsync(); // Lưu đối tượng UserInfo để có ID
+
+                // Cập nhật UserInfoId trong ApplicationUser
+                user.UserInfo = userInfo;
+                _context.ApplicationUsers.Update(user);
+                await _context.SaveChangesAsync(); // Lưu cập nhật trong ApplicationUser
+
                 // Gắn role "User" cho người dùng
                 await _userManager.AddToRoleAsync(user, "User");
             }
@@ -85,6 +96,39 @@ namespace XuongMay.Services.Service
             }    
 
             return "Registration Success";
+        }
+
+        public async Task<string> ChangePassword(ChangePasswordModelView request, ClaimsPrincipal userClaims)
+        {
+            if (request == null || string.IsNullOrEmpty(request.OldPassword) || string.IsNullOrEmpty(request.NewPassword))
+            {
+                return "Please provide all required fields.";
+            }
+
+            // Get the user ID from the claims
+            var userId = userClaims.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userId == null)
+            {
+                return "User not found.";
+            }
+
+            // Find the user by their ID
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return "User not found.";
+            }
+
+            // Check the old password
+            var result = await _userManager.ChangePasswordAsync(user, request.OldPassword, request.NewPassword);
+            if (result.Succeeded)
+            {
+                return "Password changed successfully.";
+            }
+            else
+            {
+                return "Failed to change password: " + string.Join(", ", result.Errors.Select(e => e.Description));
+            }
         }
 
         public string ValidateLogin(LoginModelView request)
@@ -116,5 +160,7 @@ namespace XuongMay.Services.Service
 
             return string.Empty;
         }
+
+        
     }
 }

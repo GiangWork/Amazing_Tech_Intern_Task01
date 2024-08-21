@@ -7,7 +7,6 @@ using XuongMay.ModelViews.PaginationModelView;
 
 namespace XuongMayBE.API.Controllers
 {
-    [Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class OrderController : ControllerBase
@@ -19,6 +18,7 @@ namespace XuongMayBE.API.Controllers
             _orderService = orderService;
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost("create_Order")]
         public async Task<IActionResult> CreateOrder([FromQuery] OrderModelView request)
         {
@@ -50,6 +50,7 @@ namespace XuongMayBE.API.Controllers
             return Ok(Order);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPut("update_Order/{id}")]
         public async Task<IActionResult> UpdateOrder(string id, [FromQuery] UpdateOrderModelView request)
         {
@@ -61,6 +62,7 @@ namespace XuongMayBE.API.Controllers
             return Ok(new { Message = "Update Success", Order });
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpDelete("delete_Order/{id}")]
         public async Task<IActionResult> DeleteOrder(string id)
         {

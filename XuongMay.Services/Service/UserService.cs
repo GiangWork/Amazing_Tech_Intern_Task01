@@ -6,6 +6,8 @@ using XuongMay.ModelViews.UserModelViews;
 using XuongMay.Repositories.Entity;
 using XuongMay.Core;
 using XuongMay.Repositories.Context;
+using XuongMay.Contract.Repositories.Entity;
+using System.Security.Claims;
 
 namespace XuongMay.Services.Service
 {
@@ -43,20 +45,46 @@ namespace XuongMay.Services.Service
             return userResponse;
         }
 
-        public async Task<UserResponseModel> UpdateUser(Guid id, UserUpdateModel model)
+        public async Task<UserInfo> UpdateUserInfo(UserInfoModel request, ClaimsPrincipal userClaims)
         {
-            var userEntity = await _context.ApplicationUsers.Include(u => u.UserInfo).FirstOrDefaultAsync(u => u.Id == id);
-            if (userEntity == null)
+            // Get the user ID from the claims
+            var userIdClaim = userClaims.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim == null || !Guid.TryParse(userIdClaim.Value, out var userId))
             {
-                return null;
+                return null; // Hoặc có thể ném một exception tùy thuộc vào yêu cầu
             }
 
-            _mapper.Map(model, userEntity);
-            _context.ApplicationUsers.Update(userEntity);
+            var applicationUser = await _context.ApplicationUsers.Include(u => u.UserInfo).FirstOrDefaultAsync(u => u.Id == userId);
+
+            if (applicationUser == null || applicationUser.UserInfo == null)
+            {
+                return null; // Hoặc có thể ném một exception tùy thuộc vào yêu cầu
+            }
+
+            // Cập nhật các thuộc tính của UserInfo từ request
+            var userInfo = applicationUser.UserInfo;
+            if (!string.IsNullOrWhiteSpace(request.FullName))
+            {
+                userInfo.FullName = request.FullName;
+            }
+            if (!string.IsNullOrWhiteSpace(request.BankAccount))
+            {
+                userInfo.BankAccount = request.BankAccount;
+            }
+            if (!string.IsNullOrWhiteSpace(request.BankAccountName))
+            {
+                userInfo.BankAccountName = request.BankAccountName;
+            }
+            if (!string.IsNullOrWhiteSpace(request.Bank))
+            {
+                userInfo.Bank = request.Bank;
+            }
+
+            // Cập nhật cơ sở dữ liệu
+            _context.UserInfos.Update(userInfo);
             await _context.SaveChangesAsync();
 
-            var userResponse = _mapper.Map<UserResponseModel>(userEntity);
-            return userResponse;
+            return userInfo;
         }
 
         public async Task<bool> DeleteUser(Guid id)
