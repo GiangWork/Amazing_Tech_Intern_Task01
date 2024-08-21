@@ -19,7 +19,7 @@ namespace XuongMay.Repositories.Context
         public virtual DbSet<ApplicationUserTokens> ApplicationUserTokens => Set<ApplicationUserTokens>();
 
 
-        //
+        // Other entity DbSets
         public virtual DbSet<Product> Products => Set<Product>();
         public virtual DbSet<Category> Categorys => Set<Category>();
         public virtual DbSet<ProductionLine> ProductionLines => Set<ProductionLine>();

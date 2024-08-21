@@ -14,12 +14,14 @@ namespace XuongMay.Services.Service
 {
     public class AuthService : IAuthService
     {
+        // Các trường riêng tư để lưu trữ các phụ thuộc được tiêm qua constructor
         private readonly IConfiguration _configuration;
         private readonly DatabaseContext _context;
         private readonly IMapper _mapper;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<ApplicationRole> _roleManager;
 
+        // Constructor để khởi tạo các phụ thuộc
         public AuthService(IConfiguration configuration, DatabaseContext context, IMapper mapper, UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager)
         {
             _configuration = configuration;
@@ -29,30 +31,45 @@ namespace XuongMay.Services.Service
             _roleManager = roleManager;
         }
 
+        // Phương thức để tạo JWT token cho một người dùng cụ thể
         public string GenerateJwtToken(ApplicationUser user)
         {
+            // Tạo một thể hiện mới của JwtSecurityTokenHandler
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_configuration["JwtSettings:SecretKey"]);
 
-            var role = _userManager.GetRolesAsync(user).Result.FirstOrDefault();
+            // Lấy khóa bí mật từ cấu hình và chuyển đổi nó thành mảng byte
+            var keyString = _configuration["JwtSettings:SecretKey"];
 
+            if (keyString == null)
+            {
+                throw new ArgumentNullException("JwtSettings:SecretKey", "Secret key is not configured.");
+            }
+            var key = Encoding.ASCII.GetBytes(keyString);
+
+            // Lấy vai trò của người dùng, nếu không có thì gán vai trò mặc định là "User"
+            var role = _userManager.GetRolesAsync(user).Result.FirstOrDefault() ?? "User";
+
+            // Tạo mô tả cho token với các thông tin cần thiết
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new[] {
-                    new Claim(ClaimTypes.Name, user.UserName),
+                    new Claim(ClaimTypes.Name, user.UserName ?? string.Empty),
                     new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                     new Claim(ClaimTypes.Role, role)
                 }),
-                //Time JWT token expire is set in appseting.json (1 day)
-                Expires = DateTime.UtcNow.AddMinutes(int.Parse(_configuration["JwtSettings:ExpirationMinutes"])),
-                Issuer = _configuration["JwtSettings:Issuer"],
-                Audience = _configuration["JwtSettings:Audience"],
+                // Thời gian hết hạn của token được thiết lập trong cấu hình
+                Expires = DateTime.UtcNow.AddMinutes(int.Parse(_configuration["JwtSettings:ExpirationMinutes"] ?? "60")),
+                Issuer = _configuration["JwtSettings:Issuer"] ?? string.Empty,
+                Audience = _configuration["JwtSettings:Audience"] ?? string.Empty,
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
+
+            // Tạo token và trả về dưới dạng chuỗi
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
 
+        // Phương thức để xác thực người dùng
         public string AuthenticateUser(LoginModelView request)
         {
             if (ValidateLogin(request) != string.Empty)
@@ -63,6 +80,7 @@ namespace XuongMay.Services.Service
             return "Login Success";
         }
 
+        // Phương thức để tạo người dùng mới
         public async Task<string> CreateUser(RegisterModelView request)
         {
             if (ValidateRegister(request) != string.Empty)
@@ -76,7 +94,7 @@ namespace XuongMay.Services.Service
             {
                 await _context.SaveChangesAsync();
 
-                // Tạo và lưu đối tượng UserInfo
+                // Lưu đối tượng UserInfo mới
                 UserInfo userInfo = new UserInfo();
 
                 _context.UserInfos.Add(userInfo);
@@ -98,6 +116,7 @@ namespace XuongMay.Services.Service
             return "Registration Success";
         }
 
+        // Phương thức để thay đổi mật khẩu
         public async Task<string> ChangePassword(ChangePasswordModelView request, ClaimsPrincipal userClaims)
         {
             if (request == null || string.IsNullOrEmpty(request.OldPassword) || string.IsNullOrEmpty(request.NewPassword))
@@ -105,21 +124,21 @@ namespace XuongMay.Services.Service
                 return "Please provide all required fields.";
             }
 
-            // Get the user ID from the claims
+            // Lấy ID người dùng từ claims
             var userId = userClaims.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (userId == null)
             {
                 return "User not found.";
             }
 
-            // Find the user by their ID
+            // Tìm người dùng theo ID
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
             {
                 return "User not found.";
             }
 
-            // Check the old password
+            // Kiểm tra mật khẩu cũ và thay đổi mật khẩu
             var result = await _userManager.ChangePasswordAsync(user, request.OldPassword, request.NewPassword);
             if (result.Succeeded)
             {
@@ -131,6 +150,7 @@ namespace XuongMay.Services.Service
             }
         }
 
+        // Phương thức để xác thực thông tin đăng nhập
         public string ValidateLogin(LoginModelView request)
         {
             if (request == null || string.IsNullOrEmpty(request.UserName) || string.IsNullOrEmpty(request.Password))
@@ -138,6 +158,7 @@ namespace XuongMay.Services.Service
                 return "Please fill all the field";
             }
 
+            // Kiểm tra thông tin đăng nhập trong cơ sở dữ liệu
             if (_context.ApplicationUsers.SingleOrDefault(u => u.UserName == request.UserName && u.Password == request.Password) == null)
             {
                 return "Invalid username or password";
@@ -146,6 +167,7 @@ namespace XuongMay.Services.Service
             return string.Empty;
         }
 
+        // Phương thức để xác thực thông tin đăng ký
         public string ValidateRegister(RegisterModelView request)
         {
             if (request == null || string.IsNullOrEmpty(request.UserName) || string.IsNullOrEmpty(request.Password))
@@ -153,6 +175,7 @@ namespace XuongMay.Services.Service
                 return "Please fill all the field";
             }
 
+            // Kiểm tra nếu tên người dùng đã tồn tại trong cơ sở dữ liệu
             if (_context.ApplicationUsers.Any(u => u.UserName == request.UserName))
             {
                 return "Username already exists";
