@@ -42,14 +42,19 @@ namespace XuongMay.Services
             return await _context.Categorys.FirstOrDefaultAsync(pc => pc.Id == id);
         }
 
-        public async Task<Category> UpdateCategory(string id, CategoryModelView request)
+        public async Task<Category> UpdateCategory(string id, UpdateCategoryModelView request)
         {
             Category Category = await _context.Categorys.FirstOrDefaultAsync(pc => pc.Id == id);
             if (Category == null)
             {
                 return null;
             }
-            Category.CategoryName = request.CategoryName;
+
+            if (!string.IsNullOrWhiteSpace(request.CategoryName))
+            {
+                Category.CategoryName = request.CategoryName;
+            }
+
             _context.Categorys.Update(Category);
             await _context.SaveChangesAsync();
             return Category;

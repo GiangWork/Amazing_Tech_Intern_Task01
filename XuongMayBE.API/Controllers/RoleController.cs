@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using XuongMay.Contract.Services.Interface;
 using XuongMay.ModelViews.PaginationModelView;
 using XuongMay.ModelViews.RoleModelViews;
+using XuongMay.ModelViews.UserRoleModelViews;
 
 namespace XuongMayBE.API.Controllers
 {
@@ -29,7 +30,7 @@ namespace XuongMayBE.API.Controllers
         public async Task<IActionResult> GetAllRoles([FromQuery] PaginationModelView request)
         {
             var pageNumber = request.pageNumber ?? 1;
-            var pageSize = request.pageSize ?? 2;
+            var pageSize = request.pageSize ?? 5;
             var productRoles = await _roleService.GetAllRoles(pageNumber, pageSize);
             if (productRoles == null)
                 return NotFound(new { Message = "No Result" });
@@ -48,7 +49,7 @@ namespace XuongMayBE.API.Controllers
         }
 
         [HttpPut("update_Role/{id}")]
-        public async Task<IActionResult> UpdateRole(Guid id, [FromQuery] RoleModelView request)
+        public async Task<IActionResult> UpdateRole(Guid id, [FromQuery] UpdateRoleModelView request)
         {
             var Role = await _roleService.UpdateRole(id, request);
             if (Role == null)
@@ -56,6 +57,17 @@ namespace XuongMayBE.API.Controllers
                 return BadRequest(new { Message = "Update Fail" });
             }
             return Ok(new { Message = "Update Success", Role });
+        }
+
+        [HttpPut("assign_Role")]
+        public async Task<IActionResult> AssignRole([FromQuery] UserRoleModelView request)
+        {
+            var UserRole = await _roleService.AssignRole(request);
+            if (UserRole == null)
+            {
+                return BadRequest(new { Message = "Assign role Fail" });
+            }
+            return Ok(new { Message = "Assign role Success", UserRole });
         }
 
         [HttpDelete("delete_Role/{id}")]

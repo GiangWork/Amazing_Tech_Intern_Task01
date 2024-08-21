@@ -4,4 +4,9 @@
     {
         public string CategoryName { get; set; } = string.Empty;
     }
+
+    public class UpdateCategoryModelView
+    {
+        public string? CategoryName { get; set; }
+    }
 }

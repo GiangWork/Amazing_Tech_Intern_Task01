@@ -9,7 +9,7 @@ namespace XuongMay.Contract.Services.Interface
         Task<ProductionLine> CreateProductionLine(ProductionLineModelView request);
         Task<BasePaginatedList<ProductionLine>> GetAllProductionLines(int pageNumber, int pageSize);
         Task<ProductionLine> GetProductionLineById(string id);
-        Task<ProductionLine> UpdateProductionLine(string id, ProductionLineModelView request);
+        Task<ProductionLine> UpdateProductionLine(string id, UpdateProductionLineModelView request);
         Task<bool> DeleteProductionLine(string id);
     }
 }

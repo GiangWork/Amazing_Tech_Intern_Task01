@@ -29,7 +29,7 @@ namespace XuongMayBE.API.Controllers
         public async Task<IActionResult> GetAllProducts([FromQuery] PaginationModelView request)
         {
             var pageNumber = request.pageNumber ?? 1;
-            var pageSize = request.pageSize ?? 2;
+            var pageSize = request.pageSize ?? 5;
             var Products = await _productService.GetAllProducts(pageNumber, pageSize);
             if (Products == null)
                 return NotFound(new { Message = "No Result" });
@@ -48,7 +48,7 @@ namespace XuongMayBE.API.Controllers
         }
 
         [HttpPut("update_Product/{id}")]
-        public async Task<IActionResult> UpdateProduct(string id, [FromQuery] ProductModelView request)
+        public async Task<IActionResult> UpdateProduct(string id, [FromQuery] UpdateProductModelView request)
         {
             var Product = await _productService.UpdateProduct(id, request);
             if (Product == null)

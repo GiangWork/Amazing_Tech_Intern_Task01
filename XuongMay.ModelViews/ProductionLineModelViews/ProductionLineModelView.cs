@@ -5,4 +5,10 @@
         public string LineName { get; set; } = string.Empty;
         public int WorkerCount { get; set; }
     }
+
+    public class UpdateProductionLineModelView
+    {
+        public string? LineName { get; set; }
+        public int? WorkerCount { get; set; }
+    }
 }

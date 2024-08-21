@@ -27,7 +27,7 @@ namespace XuongMayBE.API.Controllers
         public async Task<IActionResult> GetAllOrderTasks([FromQuery] PaginationModelView request)
         {
             var pageNumber = request.pageNumber ?? 1;
-            var pageSize = request.pageSize ?? 2;
+            var pageSize = request.pageSize ?? 5;
             var OrderTasks = await _orderTaskService.GetAllOrderTasks(pageNumber, pageSize);
             if (OrderTasks == null)
                 return NotFound(new { Message = "No Result" });
@@ -46,7 +46,7 @@ namespace XuongMayBE.API.Controllers
         }
 
         [HttpPut("update_OrderTask/{id}")]
-        public async Task<IActionResult> UpdateOrderTask(string id, [FromQuery] OrderTaskModelView request)
+        public async Task<IActionResult> UpdateOrderTask(string id, [FromQuery] UpdateOrderTaskModelView request)
         {
             var OrderTask = await _orderTaskService.UpdateOrderTask(id, request);
             if (OrderTask == null)

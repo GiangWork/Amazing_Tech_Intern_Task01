@@ -43,15 +43,24 @@ namespace XuongMay.Services.Service
             return await _context.Products.FirstOrDefaultAsync(pc => pc.Id == id);
         }
 
-        public async Task<Product> UpdateProduct(string id, ProductModelView request)
+        public async Task<Product> UpdateProduct(string id, UpdateProductModelView request)
         {
             Product Product = await _context.Products.FirstOrDefaultAsync(pc => pc.Id == id);
             if (Product == null)
             {
                 return null;
             }
-            Product.ProductName = request.ProductName;
-            Product.CategoryID = request.CategoryID;
+
+            if (!string.IsNullOrWhiteSpace(request.ProductName))
+            {
+                Product.ProductName = request.ProductName;
+            }
+
+            if (!string.IsNullOrWhiteSpace(request.CategoryID))
+            {
+                Product.CategoryID = request.CategoryID;
+            }
+            
             _context.Products.Update(Product);
             await _context.SaveChangesAsync();
             return Product;

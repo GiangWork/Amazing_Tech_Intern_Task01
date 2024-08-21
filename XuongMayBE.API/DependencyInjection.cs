@@ -57,7 +57,8 @@ namespace XuongMayBE.API
                 .AddScoped<IProductService, ProductService>()
                 .AddScoped<IOrderTaskService, OrderTaskService>()
                 .AddScoped<IProductionLineService, ProductionLineService>()
-                .AddScoped<IOrderService, OrderService>();
+                .AddScoped<IOrderService, OrderService>()
+                .AddScoped<IRoleService, RoleService>();
         }
 
         public static void AddAutoMapper(this IServiceCollection services)
@@ -79,7 +80,7 @@ namespace XuongMayBE.API
                     Scheme = "Bearer",
                     BearerFormat = "JWT",
                     In = ParameterLocation.Header,
-                    Description = "Enter 'Bearer' [space] and then your token in the text input below.\n\nExample: \"Bearer 12345abcdef\""
+                    Description = "Enter your token"
                 });
 
                 c.AddSecurityRequirement(new OpenApiSecurityRequirement

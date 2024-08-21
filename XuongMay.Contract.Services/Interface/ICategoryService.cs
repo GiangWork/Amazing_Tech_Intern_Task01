@@ -9,7 +9,7 @@ namespace XuongMay.Contract.Services.Interface
         Task<Category> CreateCategory(CategoryModelView request);
         Task<BasePaginatedList<Category>> GetAllCategories(int pageNumber, int pageSize);
         Task<Category> GetCategoryById(string id);
-        Task<Category> UpdateCategory(string id, CategoryModelView request);
+        Task<Category> UpdateCategory(string id, UpdateCategoryModelView request);
         Task<bool> DeleteCategory(string id);
     }
 }

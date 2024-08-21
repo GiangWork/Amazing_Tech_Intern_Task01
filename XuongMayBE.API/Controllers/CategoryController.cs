@@ -31,7 +31,7 @@ namespace XuongMayBE.API.Controllers
         public async Task<IActionResult> GetAllCategories([FromQuery] PaginationModelView request)
         {
             var pageNumber = request.pageNumber ?? 1;
-            var pageSize = request.pageSize ?? 2;
+            var pageSize = request.pageSize ?? 5;
 
             var productCategories = await _categoryService.GetAllCategories(pageNumber, pageSize);
 
@@ -54,7 +54,7 @@ namespace XuongMayBE.API.Controllers
         }
 
         [HttpPut("update_Category/{id}")]
-        public async Task<IActionResult> UpdateCategory(string id, [FromQuery] CategoryModelView request)
+        public async Task<IActionResult> UpdateCategory(string id, [FromQuery] UpdateCategoryModelView request)
         {
             var Category = await _categoryService.UpdateCategory(id, request);
             if (Category == null)

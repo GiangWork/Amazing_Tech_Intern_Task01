@@ -7,6 +7,7 @@ using XuongMay.ModelViews.OrderTaskModelView;
 using XuongMay.ModelViews.ProductionLineModelViews;
 using XuongMay.ModelViews.ProductModelView;
 using XuongMay.ModelViews.RoleModelViews;
+using XuongMay.ModelViews.UserRoleModelViews;
 using XuongMay.Repositories.Entity;
 
 namespace XuongMayBE.API.AutoMapper
@@ -28,11 +29,15 @@ namespace XuongMayBE.API.AutoMapper
 
             CreateMap<LoginModelView, ApplicationUser>();
 
+            CreateMap<RegisterModelView, ApplicationUser>();
+
             CreateMap<RoleModelView, ApplicationRole>();
 
             CreateMap<UserTokenModelView, ApplicationUserTokens>();
 
             CreateMap<UserLoginModelView, ApplicationUserLogins>();
+
+            //CreateMap<UserRoleModelView, ApplicationUserRoles>();
         }
     }
 }

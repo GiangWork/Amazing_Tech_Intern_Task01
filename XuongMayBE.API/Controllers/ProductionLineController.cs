@@ -9,11 +9,11 @@ namespace XuongMayBE.API.Controllers
     [Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
-    public class ProductionLineionLineController : ControllerBase
+    public class ProductionLineController : ControllerBase
     {
         private readonly IProductionLineService _productLineService;
 
-        public ProductionLineionLineController(IProductionLineService productLineService)
+        public ProductionLineController(IProductionLineService productLineService)
         {
             _productLineService = productLineService;
 
@@ -31,7 +31,7 @@ namespace XuongMayBE.API.Controllers
         public async Task<IActionResult> GetAllProductionLines([FromQuery] PaginationModelView request)
         {
             var pageNumber = request.pageNumber ?? 1;
-            var pageSize = request.pageSize ?? 2;
+            var pageSize = request.pageSize ?? 5;
             var ProductionLines = await _productLineService.GetAllProductionLines(pageNumber, pageSize);
             if (ProductionLines == null)
                 return NotFound(new { Message = "No Result" });
@@ -51,7 +51,7 @@ namespace XuongMayBE.API.Controllers
         }
 
         [HttpPut("update_ProductionLine/{id}")]
-        public async Task<IActionResult> UpdateProductionLine(string id, [FromQuery] ProductionLineModelView request)
+        public async Task<IActionResult> UpdateProductionLine(string id, [FromQuery] UpdateProductionLineModelView request)
         {
             var ProductionLine = await _productLineService.UpdateProductionLine(id, request);
             if (ProductionLine == null)

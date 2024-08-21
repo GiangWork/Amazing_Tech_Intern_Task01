@@ -42,15 +42,24 @@ namespace XuongMay.Services.Service
             return await _context.ProductionLines.FirstOrDefaultAsync(pc => pc.Id == id);
         }
 
-        public async Task<ProductionLine> UpdateProductionLine(string id, ProductionLineModelView request)
+        public async Task<ProductionLine> UpdateProductionLine(string id, UpdateProductionLineModelView request)
         {
             ProductionLine ProductionLine = await _context.ProductionLines.FirstOrDefaultAsync(pc => pc.Id == id);
             if (ProductionLine == null)
             {
                 return null;
             }
-            ProductionLine.LineName = request.LineName;
-            ProductionLine.WorkerCount = request.WorkerCount;
+
+            if (!string.IsNullOrWhiteSpace(request.LineName))
+            {
+                ProductionLine.LineName = request.LineName;
+            }
+
+            if (request.WorkerCount.HasValue)
+            {
+                ProductionLine.WorkerCount = request.WorkerCount.Value;
+            }
+            
             _context.ProductionLines.Update(ProductionLine);
             await _context.SaveChangesAsync();
             return ProductionLine;

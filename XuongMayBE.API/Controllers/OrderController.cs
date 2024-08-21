@@ -31,7 +31,7 @@ namespace XuongMayBE.API.Controllers
         public async Task<IActionResult> GetAllOrder([FromQuery] PaginationModelView request)
         {
             var pageNumber = request.pageNumber ?? 1;
-            var pageSize = request.pageSize ?? 2;
+            var pageSize = request.pageSize ?? 5;
             var Orders = await _orderService.GetAllOrders(pageNumber, pageSize);
             if (Orders == null)
                 return NotFound(new { Message = "No Result" });
@@ -51,7 +51,7 @@ namespace XuongMayBE.API.Controllers
         }
 
         [HttpPut("update_Order/{id}")]
-        public async Task<IActionResult> UpdateOrder(string id, [FromQuery] OrderModelView request)
+        public async Task<IActionResult> UpdateOrder(string id, [FromQuery] UpdateOrderModelView request)
         {
             var Order = await _orderService.UpdateOrder(id, request);
             if (Order == null)

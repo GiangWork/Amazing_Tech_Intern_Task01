@@ -12,7 +12,7 @@ namespace XuongMay.Contract.Services.Interface
         Task<Order> CreateOrder(OrderModelView request);
         Task<BasePaginatedList<Order>> GetAllOrders(int pageNumber, int pageSize);
         Task<Order> GetOrderById(string id);
-        Task<Order> UpdateOrder(string id, OrderModelView request);
+        Task<Order> UpdateOrder(string id, UpdateOrderModelView request);
         Task<bool> DeleteOrder(string id);
     }
 }

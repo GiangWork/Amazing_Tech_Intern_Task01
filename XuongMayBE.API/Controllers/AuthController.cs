@@ -106,14 +106,15 @@ namespace XuongMayBE.API.Controllers
 
         [AllowAnonymous]
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromQuery] LoginModelView request)
+        public async Task<IActionResult> Register([FromQuery] RegisterModelView request)
         {
-            if (await _authService.CreateUser(request) == "Registration Success")
+            string resultMessage = await _authService.CreateUser(request);
+            if (resultMessage == "Registration Success")
             {
                 return Ok(new { Message = "Registered success" });
             }
 
-            return BadRequest(new { Message = _authService.CreateUser(request) });
+            return BadRequest(new { Message = resultMessage });
         }
 
         private bool IsTokenExpired(string token)

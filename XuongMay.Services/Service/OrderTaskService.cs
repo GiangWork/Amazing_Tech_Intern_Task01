@@ -41,16 +41,29 @@ namespace XuongMay.Services.Service
             return await _context.OrderTasks.FirstOrDefaultAsync(pc => pc.Id == id);
         }
 
-        public async Task<OrderTask> UpdateOrderTask(string id, OrderTaskModelView request)
+        public async Task<OrderTask> UpdateOrderTask(string id, UpdateOrderTaskModelView request)
         {
             OrderTask OrderTask = await _context.OrderTasks.FirstOrDefaultAsync(pc => pc.Id == id);
             if (OrderTask == null)
             {
                 return null;
             }
-            OrderTask.OrderID = request.OrderID;
-            OrderTask.LineID = request.LineID;
-            OrderTask.Quantity = request.Quantity;
+
+            if (!string.IsNullOrWhiteSpace(request.OrderID))
+            {
+                OrderTask.OrderID = request.OrderID;
+            }
+
+            if (!string.IsNullOrWhiteSpace(request.LineID))
+            {
+                OrderTask.LineID = request.LineID;
+            }
+
+            if (request.Quantity.HasValue)
+            {
+                OrderTask.Quantity = request.Quantity.Value;
+            }
+            
             _context.OrderTasks.Update(OrderTask);
             await _context.SaveChangesAsync();
             return OrderTask;

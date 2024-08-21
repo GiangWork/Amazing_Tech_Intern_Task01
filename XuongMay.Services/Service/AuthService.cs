@@ -55,19 +55,19 @@ namespace XuongMay.Services.Service
 
         public string AuthenticateUser(LoginModelView request)
         {
-            if (!ValidateLogin(request, out string errorMessage))
+            if (ValidateLogin(request) != string.Empty)
             {
-                return errorMessage;
+                return ValidateLogin(request);
             }
 
             return "Login Success";
         }
 
-        public async Task<string> CreateUser(LoginModelView request)
+        public async Task<string> CreateUser(RegisterModelView request)
         {
-            if (!ValidateRegister(request, out string errorMessage))
+            if (ValidateRegister(request) != string.Empty)
             {
-                return errorMessage;
+                return ValidateRegister(request);
             }
 
             ApplicationUser user = _mapper.Map<ApplicationUser>(request);
@@ -87,40 +87,34 @@ namespace XuongMay.Services.Service
             return "Registration Success";
         }
 
-        public bool ValidateLogin(LoginModelView request, out string errorMessage)
+        public string ValidateLogin(LoginModelView request)
         {
             if (request == null || string.IsNullOrEmpty(request.UserName) || string.IsNullOrEmpty(request.Password))
             {
-                errorMessage = "Please fill all the field";
-                return false;
+                return "Please fill all the field";
             }
 
             if (_context.ApplicationUsers.SingleOrDefault(u => u.UserName == request.UserName && u.Password == request.Password) == null)
             {
-                errorMessage = "Invalid username or password";
-                return false;
+                return "Invalid username or password";
             }
 
-            errorMessage = string.Empty;
-            return true;
+            return string.Empty;
         }
 
-        public bool ValidateRegister(LoginModelView request, out string errorMessage)
+        public string ValidateRegister(RegisterModelView request)
         {
             if (request == null || string.IsNullOrEmpty(request.UserName) || string.IsNullOrEmpty(request.Password))
             {
-                errorMessage = "Please fill all the field";
-                return false;
+                return "Please fill all the field";
             }
 
             if (_context.ApplicationUsers.Any(u => u.UserName == request.UserName))
             {
-                errorMessage = "Username already exists";
-                return false;
+                return "Username already exists";
             }
 
-            errorMessage = string.Empty;
-            return true;
+            return string.Empty;
         }
     }
 }

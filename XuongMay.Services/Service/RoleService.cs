@@ -4,6 +4,7 @@ using XuongMay.Contract.Repositories.Entity;
 using XuongMay.Contract.Services.Interface;
 using XuongMay.Core;
 using XuongMay.ModelViews.RoleModelViews;
+using XuongMay.ModelViews.UserRoleModelViews;
 using XuongMay.Repositories.Context;
 
 namespace XuongMay.Services.Service
@@ -42,17 +43,50 @@ namespace XuongMay.Services.Service
             return await _context.ApplicationRoles.FirstOrDefaultAsync(pc => pc.Id == id);
         }
 
-        public async Task<ApplicationRole> UpdateRole(Guid id, RoleModelView request)
+        public async Task<ApplicationRole> UpdateRole(Guid id, UpdateRoleModelView request)
         {
             ApplicationRole ApplicationRole = await _context.ApplicationRoles.FirstOrDefaultAsync(pc => pc.Id == id);
             if (ApplicationRole == null)
             {
                 return null;
             }
-            ApplicationRole.Name = request.Name;
+
+            if (!string.IsNullOrWhiteSpace(request.Name))
+            {
+                ApplicationRole.Name = request.Name;
+            }
+            
             _context.ApplicationRoles.Update(ApplicationRole);
             await _context.SaveChangesAsync();
             return ApplicationRole;
+        }
+
+        public async Task<ApplicationUserRoles> AssignRole(UserRoleModelView request)
+        {
+            // Tìm thực thể hiện tại
+            var existingUserRole = await _context.ApplicationUserRoles
+                .FirstOrDefaultAsync(pc => pc.UserId == request.UserId);
+
+            if (existingUserRole != null)
+            {
+                // Xóa thực thể hiện tại
+                _context.ApplicationUserRoles.Remove(existingUserRole);
+                await _context.SaveChangesAsync();
+            }
+
+            // Tạo mới thực thể với RoleId mới
+            var newUserRole = new ApplicationUserRoles
+            {
+                UserId = request.UserId,
+                RoleId = request.RoleId,
+                CreatedBy = "system", // Hoặc lấy từ nguồn khác
+                CreatedTime = DateTimeOffset.UtcNow
+            };
+
+            _context.ApplicationUserRoles.Add(newUserRole);
+            await _context.SaveChangesAsync();
+
+            return newUserRole;
         }
 
         public async Task<bool> DeleteRole(Guid id)
