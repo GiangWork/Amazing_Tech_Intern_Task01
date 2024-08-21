@@ -2,17 +2,25 @@
 {
     public class UserInfoModel
     {
-        // Thêm các thuộc tính cần thiết cho việc cập nhật người dùng
+        // Tên đầy đủ của người dùng, có thể để trống nếu không cần thiết
         public string? FullName { get; set; }
+
+        // Số tài khoản ngân hàng, có thể để trống nếu không có
         public string? BankAccount { get; set; }
+
+        // Tên tài khoản ngân hàng, có thể để trống nếu không cần thiết
         public string? BankAccountName { get; set; }
+
+        // Tên ngân hàng, có thể để trống nếu không cần thiết
         public string? Bank { get; set; }
     }
 
     public class UserResponseModel
     {
-        // Các thuộc tính trả về cho người dùng
+        // ID của người dùng, không thể để trống
         public Guid Id { get; set; }
+
+        // Tên người dùng, có thể để trống nếu không có
         public string? Username { get; set; }
     }
 }
