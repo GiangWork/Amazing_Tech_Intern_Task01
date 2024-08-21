@@ -8,6 +8,7 @@ using XuongMay.ModelViews.ProductionLineModelViews;
 using XuongMay.ModelViews.ProductModelView;
 using XuongMay.ModelViews.RoleModelViews;
 using XuongMay.ModelViews.UserRoleModelViews;
+using XuongMay.ModelViews.UserModelViews;
 using XuongMay.Repositories.Entity;
 
 namespace XuongMayBE.API.AutoMapper
@@ -36,6 +37,14 @@ namespace XuongMayBE.API.AutoMapper
             CreateMap<UserTokenModelView, ApplicationUserTokens>();
 
             CreateMap<UserLoginModelView, ApplicationUserLogins>();
+
+
+
+            ////User
+            CreateMap<UserUpdateModel, ApplicationUser>();
+            CreateMap<ApplicationUser, UserResponseModel>();
+            CreateMap<UserUpdateModel, ApplicationUser>();
+
 
             //CreateMap<UserRoleModelView, ApplicationUserRoles>();
         }
