@@ -25,33 +25,28 @@ namespace XuongMayBE.API
             services.AddDefaultRole();
             services.AddAdminAccount(configuration);
         }
-        public static void ConfigRoute(this IServiceCollection services)
+
+        private static void ConfigRoute(this IServiceCollection services)
         {
-            services.Configure<RouteOptions>(options =>
-            {
-                options.LowercaseUrls = true;
-            });
-        }
-        public static void AddDatabase(this IServiceCollection services, IConfiguration configuration)
-        {
-            services.AddDbContext<DatabaseContext>(options =>
-            {
-                options.UseLazyLoadingProxies().UseSqlServer(configuration.GetConnectionString("MyCnn"));
-            });
+            services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
         }
 
-        public static void AddIdentity(this IServiceCollection services)
+        private static void AddDatabase(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
-            {
-            })
-             .AddEntityFrameworkStores<DatabaseContext>()
-             .AddDefaultTokenProviders();
+            services.AddDbContext<DatabaseContext>(options =>
+                options.UseLazyLoadingProxies().UseSqlServer(configuration.GetConnectionString("MyCnn")));
         }
-        public static void AddServices(this IServiceCollection services)
+
+        private static void AddIdentity(this IServiceCollection services)
         {
-            services
-                .AddScoped<IUserService, UserService>()
+            services.AddIdentity<ApplicationUser, ApplicationRole>()
+                .AddEntityFrameworkStores<DatabaseContext>()
+                .AddDefaultTokenProviders();
+        }
+
+        private static void AddServices(this IServiceCollection services)
+        {
+            services.AddScoped<IUserService, UserService>()
                 .AddScoped<IAuthService, AuthService>()
                 .AddScoped<ICategoryService, CategoryService>()
                 .AddScoped<IProductService, ProductService>()
@@ -61,18 +56,17 @@ namespace XuongMayBE.API
                 .AddScoped<IRoleService, RoleService>();
         }
 
-        public static void AddAutoMapper(this IServiceCollection services)
+        private static void AddAutoMapper(this IServiceCollection services)
         {
             services.AddAutoMapper(typeof(AutoMapperConfig).Assembly);
         }
 
-        public static void AddAuthorization(this IServiceCollection services)
+        private static void AddAuthorization(this IServiceCollection services)
         {
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Xuong May API", Version = "v1" });
 
-                // Cấu hình Authorization
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     Name = "Authorization",
@@ -94,42 +88,29 @@ namespace XuongMayBE.API
                                 Id = "Bearer"
                             }
                         },
-                        new string[] {}
+                        Array.Empty<string>()
                     }
                 });
             });
         }
 
-        public static void AddDefaultRole(this IServiceCollection services)
+        private static void AddDefaultRole(this IServiceCollection services)
         {
-            var serviceProvider = services.BuildServiceProvider();
+            using var serviceProvider = services.BuildServiceProvider();
             var roleManager = serviceProvider.GetRequiredService<RoleManager<ApplicationRole>>();
 
             Task.Run(async () =>
             {
-                var roles = new List<ApplicationRole>
-        {
-            new ApplicationRole
-            {
-                Name = "Admin",
-                CreatedBy = "System"
-            },
-            new ApplicationRole
-            {
-                Name = "User",
-                CreatedBy = "System"
-            },
-            new ApplicationRole
-            {
-                Name = "Line Manager",
-                CreatedBy = "System"
-            }
-        };
+                var roles = new[]
+                {
+                    new ApplicationRole { Name = "Admin", CreatedBy = "System" },
+                    new ApplicationRole { Name = "User", CreatedBy = "System" },
+                    new ApplicationRole { Name = "Line Manager", CreatedBy = "System" }
+                };
 
                 foreach (var role in roles)
                 {
-                    var roleExist = await roleManager.RoleExistsAsync(role.Name);
-                    if (!roleExist)
+                    if (!await roleManager.RoleExistsAsync(role.Name ?? string.Empty))
                     {
                         await roleManager.CreateAsync(role);
                     }
@@ -137,34 +118,38 @@ namespace XuongMayBE.API
             }).GetAwaiter().GetResult();
         }
 
-        public static void AddAdminAccount(this IServiceCollection services, IConfiguration configuration)
+        private static void AddAdminAccount(this IServiceCollection services, IConfiguration configuration)
         {
-            var serviceProvider = services.BuildServiceProvider();
+            using var serviceProvider = services.BuildServiceProvider();
             var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
             var roleManager = serviceProvider.GetRequiredService<RoleManager<ApplicationRole>>();
+
             Task.Run(async () =>
             {
-                // Tạo tài khoản admin nếu chưa tồn tại
                 var adminUserName = configuration["AdminSettings:UserName"];
                 var adminPassword = configuration["AdminSettings:Password"];
-                var adminRole = "Admin";
+                const string adminRole = "Admin";
 
-                if (await userManager.FindByNameAsync(adminUserName) == null)
+                if (!string.IsNullOrWhiteSpace(adminUserName) && !string.IsNullOrWhiteSpace(adminPassword))
                 {
-                    ApplicationUser adminUser = new ApplicationUser
+                    if (await userManager.FindByNameAsync(adminUserName) == null)
                     {
-                        UserName = adminUserName,
-                        Password = adminPassword
-                    };
-
-                    var result = await userManager.CreateAsync(adminUser, adminPassword);
-                    if (result.Succeeded)
-                    {
-                        if (!await roleManager.RoleExistsAsync(adminRole))
+                        var adminUser = new ApplicationUser
                         {
-                            await roleManager.CreateAsync(new ApplicationRole { Name = adminRole });
+                            UserName = adminUserName,
+                            Password = adminPassword // Xác minh cách lưu trữ mật khẩu, có thể là hashed
+                        };
+
+                        var result = await userManager.CreateAsync(adminUser, adminPassword);
+                        if (result.Succeeded)
+                        {
+                            if (!await roleManager.RoleExistsAsync(adminRole))
+                            {
+                                await roleManager.CreateAsync(new ApplicationRole { Name = adminRole });
+                            }
+
+                            await userManager.AddToRoleAsync(adminUser, adminRole);
                         }
-                        await userManager.AddToRoleAsync(adminUser, adminRole);
                     }
                 }
             }).GetAwaiter().GetResult();

@@ -44,10 +44,10 @@ namespace XuongMay.Services.Service
 
         public async Task<Order> UpdateOrder(string id, UpdateOrderModelView request)
         {
-            Order Order = await _context.Orders.FirstOrDefaultAsync(pc => pc.Id == id);
+            Order? Order = await _context.Orders.FirstOrDefaultAsync(pc => pc.Id == id);
             if (Order == null)
             {
-                return null;
+                throw new KeyNotFoundException($"Order with ID {id} was not found.");
             }
 
             if (!string.IsNullOrWhiteSpace(request.OrderName))
@@ -82,7 +82,7 @@ namespace XuongMay.Services.Service
 
         public async Task<bool> DeleteOrder(string id)
         {
-            Order Order = await _context.Orders.FirstOrDefaultAsync(pc => pc.Id == id);
+            Order? Order = await _context.Orders.FirstOrDefaultAsync(pc => pc.Id == id);
             if (Order == null)
             {
                 return false;

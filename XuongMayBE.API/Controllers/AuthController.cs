@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.IdentityModel.Tokens.Jwt;
 using XuongMay.Contract.Repositories.Entity;
 using XuongMay.ModelViews.AuthModelViews;
@@ -29,108 +30,124 @@ namespace XuongMayBE.API.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromQuery] LoginModelView request)
         {
+            // Validate input
+            if (request == null)
+            {
+                return BadRequest("Invalid login request."); // Trả về lỗi nếu yêu cầu không hợp lệ
+            }
+
             var authResult = _authService.AuthenticateUser(request);
             if (authResult == "Login Success")
             {
-                var user = _context.ApplicationUsers.FirstOrDefault(f => f.UserName == request.UserName);
+                var user = await _context.ApplicationUsers
+                    .FirstOrDefaultAsync(f => f.UserName == request.UserName); // Tìm người dùng theo tên
+
                 if (user == null)
                 {
-                    return BadRequest("User not found");
+                    return BadRequest("User not found"); // Trả về lỗi nếu không tìm thấy người dùng
                 }
 
-                var existingToken = _context.ApplicationUserTokens
-                    .FirstOrDefault(t => t.UserId == user.Id);
+                var existingToken = await _context.ApplicationUserTokens
+                    .FirstOrDefaultAsync(t => t.UserId == user.Id); // Tìm token hiện tại của người dùng
 
                 string token;
                 DateTime now = DateTime.UtcNow;
 
-                if (existingToken == null || IsTokenExpired(existingToken.Value))
+                // Kiểm tra token đã hết hạn hoặc không tồn tại
+                if (!(existingToken != null && !IsTokenExpired(existingToken.Value ?? string.Empty)))
                 {
-                    // Token không tồn tại hoặc đã hết hạn, tạo token mới
-                    token = _authService.GenerateJwtToken(user);
+                    token = _authService.GenerateJwtToken(user); // Tạo token mới
 
                     if (existingToken == null)
                     {
-                        UserTokenModelView UserToken = new UserTokenModelView
+                        var userToken = new UserTokenModelView
                         {
                             UserId = user.Id,
                             Value = token,
                             LoginProvider = "Basic Authentication",
                             Name = "Basic Authentication"
                         };
-                        ApplicationUserTokens ApplicationUserToken = _mapper.Map<ApplicationUserTokens>(UserToken);
+                        var applicationUserToken = _mapper.Map<ApplicationUserTokens>(userToken);
 
-                        await _context.ApplicationUserTokens.AddAsync(ApplicationUserToken);
+                        await _context.ApplicationUserTokens.AddAsync(applicationUserToken); // Thêm token mới vào cơ sở dữ liệu
                     }
-                    else if (IsTokenExpired(existingToken.Value))
+                    else
                     {
-                        ApplicationUserTokens UpdateUserToken = _context.ApplicationUserTokens.FirstOrDefault(f => f.UserId == user.Id);
-                        UpdateUserToken.Value = token;
-                        UpdateUserToken.LastUpdatedTime = DateTime.UtcNow;
-                        _context.ApplicationUserTokens.Update(UpdateUserToken);
+                        var updateUserToken = existingToken;
+                        updateUserToken.Value = token;
+                        updateUserToken.LastUpdatedTime = DateTime.UtcNow;
+                        _context.ApplicationUserTokens.Update(updateUserToken); // Cập nhật token hiện tại
                     }
                 }
                 else
                 {
-                    token = existingToken.Value;
+                    token = existingToken.Value ?? string.Empty;    // Sử dụng token hiện tại nếu chưa hết hạn
                 }
 
-                ApplicationUserLogins UserLoginHistory = _context.ApplicationUserLogins.FirstOrDefault(f => f.UserId == user.Id);
+                var userLoginHistory = await _context.ApplicationUserLogins
+                    .FirstOrDefaultAsync(f => f.UserId == user.Id); // Tìm lịch sử đăng nhập của người dùng
 
-                if (UserLoginHistory == null)
+                if (userLoginHistory == null)
                 {
-                    UserLoginModelView UserLogin = new UserLoginModelView
+                    var userLogin = new UserLoginModelView
                     {
                         UserId = user.Id,
                         ProviderKey = token,
                         LoginProvider = "Basic Authentication"
                     };
-                    ApplicationUserLogins ApplicationUserLogin = _mapper.Map<ApplicationUserLogins>(UserLogin);
+                    var applicationUserLogin = _mapper.Map<ApplicationUserLogins>(userLogin);
 
-                    await _context.ApplicationUserLogins.AddAsync(ApplicationUserLogin);
+                    await _context.ApplicationUserLogins.AddAsync(applicationUserLogin); // Thêm lịch sử đăng nhập mới
                 }
                 else
                 {
-                    ApplicationUserLogins UpdateUserLogin = _context.ApplicationUserLogins.FirstOrDefault(f => f.UserId == user.Id);
-                    UpdateUserLogin.LastUpdatedTime = DateTime.UtcNow;
-                    _context.ApplicationUserLogins.Update(UpdateUserLogin);
+                    userLoginHistory.LastUpdatedTime = DateTime.UtcNow;
+                    _context.ApplicationUserLogins.Update(userLoginHistory); // Cập nhật lịch sử đăng nhập hiện tại
                 }
 
-                await _context.SaveChangesAsync();
-                
-                return Ok(new { Message = "Login Success", Token = token });
+                await _context.SaveChangesAsync(); // Lưu tất cả thay đổi vào cơ sở dữ liệu
+
+                return Ok(new { Message = "Login Success", Token = token }); // Trả về thành công và token
             }
 
-            return BadRequest(authResult);
+            return BadRequest(authResult); // Trả về lỗi nếu đăng nhập không thành công
         }
 
         [AllowAnonymous]
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromQuery] RegisterModelView request)
         {
-            string resultMessage = await _authService.CreateUser(request);
-            if (resultMessage == "Registration Success")
+            if (request == null)
             {
-                return Ok(new { Message = "Registered success" });
+                return BadRequest("Invalid registration request."); // Trả về lỗi nếu yêu cầu không hợp lệ
             }
 
-            return BadRequest(new { Message = resultMessage });
+            string resultMessage = await _authService.CreateUser(request); // Tạo người dùng mới
+            if (resultMessage == "Registration Success")
+            {
+                return Ok(new { Message = "Registered success" }); // Trả về thành công nếu đăng ký thành công
+            }
+
+            return BadRequest(new { Message = resultMessage }); // Trả về lỗi nếu đăng ký không thành công
         }
 
         [Authorize]
-        [HttpPost("change_Password")]
+        [HttpPost("change_password")]
         public async Task<IActionResult> ChangePassword([FromQuery] ChangePasswordModelView model)
         {
+            if (model == null)
+            {
+                return BadRequest("Invalid change password request."); // Trả về lỗi nếu yêu cầu không hợp lệ
+            }
+
             var userClaims = HttpContext.User;
-            var result = await _authService.ChangePassword(model, userClaims);
+            var result = await _authService.ChangePassword(model, userClaims); // Thay đổi mật khẩu
             if (result == "Password changed successfully.")
             {
-                return Ok(new { Message = result });
+                return Ok(new { Message = result }); // Trả về thành công nếu thay đổi mật khẩu thành công
             }
-            else
-            {
-                return BadRequest(new { Message = result });
-            }
+
+            return BadRequest(new { Message = result }); // Trả về lỗi nếu thay đổi mật khẩu không thành công
         }
 
         private bool IsTokenExpired(string token)
@@ -143,8 +160,7 @@ namespace XuongMayBE.API.Controllers
                 return true; // Token không hợp lệ
             }
 
-            // Kiểm tra thời gian hết hạn
-            return jwtToken.ValidTo < DateTime.UtcNow;
+            return jwtToken.ValidTo < DateTime.UtcNow; // Kiểm tra xem token đã hết hạn chưa
         }
     }
 }

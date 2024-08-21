@@ -18,31 +18,31 @@ namespace XuongMayBE.API.AutoMapper
         public AutoMapperConfig()
         {
             //Create AutoMapper
-            CreateMap<ProductionLineModelView, ProductionLine>();
+            CreateMap<ProductionLineModelView, ProductionLine>();   // ProductionLineModelView -> ProductionLine
 
-            CreateMap<CategoryModelView, Category>();
+            CreateMap<CategoryModelView, Category>();   // CategoryModelView -> Category
 
-            CreateMap<OrderTaskModelView, OrderTask>();
+            CreateMap<OrderTaskModelView, OrderTask>(); // OrderTaskModelView -> OrderTask
 
-            CreateMap<ProductModelView, Product>();
+            CreateMap<ProductModelView, Product>(); // ProductModelView -> Product
 
-            CreateMap<OrderModelView, Order>();
+            CreateMap<OrderModelView, Order>(); // OrderModelView -> Order
 
-            CreateMap<LoginModelView, ApplicationUser>();
+            CreateMap<LoginModelView, ApplicationUser>();   // LoginModelView -> ApplicationUser
 
-            CreateMap<RegisterModelView, ApplicationUser>();
+            CreateMap<RegisterModelView, ApplicationUser>();    // RegisterModelView -> ApplicationUser
 
-            CreateMap<RoleModelView, ApplicationRole>();
+            CreateMap<RoleModelView, ApplicationRole>();    // RoleModelView -> ApplicationRole
 
-            CreateMap<UserTokenModelView, ApplicationUserTokens>();
+            CreateMap<UserTokenModelView, ApplicationUserTokens>(); // UserTokenModelView -> ApplicationUserTokens
 
-            CreateMap<UserLoginModelView, ApplicationUserLogins>();
+            CreateMap<UserLoginModelView, ApplicationUserLogins>(); // UserLoginModelView -> ApplicationUserLogins
 
-            CreateMap<UserInfoModel, UserInfo>();
+            CreateMap<UserInfoModel, UserInfo>();   // UserInfoModel -> UserInfo
 
-            CreateMap<ApplicationUser, UserResponseModel>();
+            CreateMap<ApplicationUser, UserResponseModel>();    // ApplicationUser -> UserResponseModel
 
-            CreateMap<UserRoleModelView, ApplicationUserRoles>();
+            CreateMap<UserRoleModelView, ApplicationUserRoles>();    // UserRoleModelView -> ApplicationUserRoles
         }
     }
 }
