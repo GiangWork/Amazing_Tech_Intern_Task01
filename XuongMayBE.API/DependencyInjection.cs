@@ -6,6 +6,7 @@ using XuongMay.Repositories.Context;
 using XuongMay.Repositories.Entity;
 using XuongMay.Services;
 using XuongMay.Services.Service;
+using XuongMayBE.API.AutoMapper;
 
 namespace XuongMayBE.API
 {
@@ -18,6 +19,7 @@ namespace XuongMayBE.API
             services.AddIdentity();
             services.AddInfrastructure(configuration);
             services.AddServices();
+            services.AutoMapper();
         }
         public static void ConfigRoute(this IServiceCollection services)
         {
@@ -46,7 +48,17 @@ namespace XuongMayBE.API
         {
             services
                 //.AddScoped<IUserService, UserService>()
-                .AddScoped<IUserService, UserService>();
+                //.AddScoped<IUserService, UserService>();
+                .AddScoped<ICategoryService, CategoryService>()
+                .AddScoped<IProductService, ProductService>()
+                .AddScoped<IOrderTaskService, OrderTaskService>()
+                .AddScoped<IProductionLineService, ProductionLineService>()
+                .AddScoped<IOrderService, OrderService>();
+        }
+
+        public static void AutoMapper(this IServiceCollection services)
+        {
+            services.AddAutoMapper(typeof(AutoMapperConfig).Assembly);
         }
     }
 }
