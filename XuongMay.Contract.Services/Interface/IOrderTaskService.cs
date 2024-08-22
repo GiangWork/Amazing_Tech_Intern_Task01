@@ -9,7 +9,7 @@ namespace XuongMay.Contract.Services.Interface
         Task<OrderTask> CreateOrderTask(OrderTaskModelView request);
         Task<BasePaginatedList<OrderTask>> GetAllOrderTasks(int pageNumber, int pageSize);
         Task<OrderTask> GetOrderTaskById(string id);
-        Task<OrderTask> UpdateOrderTask(string id, OrderTaskModelView request);
+        Task<OrderTask> UpdateOrderTask(string id, UpdateOrderTaskModelView request);
         Task<bool> DeleteOrderTask(string id);
     }
 }
