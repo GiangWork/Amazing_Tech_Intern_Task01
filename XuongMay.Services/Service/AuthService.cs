@@ -9,6 +9,7 @@ using XuongMay.Repositories.Context;
 using AutoMapper;
 using XuongMay.Contract.Repositories.Entity;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace XuongMay.Services.Service
 {
@@ -119,7 +120,7 @@ namespace XuongMay.Services.Service
         // Phương thức để thay đổi mật khẩu
         public async Task<string> ChangePassword(ChangePasswordModelView request, ClaimsPrincipal userClaims)
         {
-            if (request == null || string.IsNullOrEmpty(request.OldPassword) || string.IsNullOrEmpty(request.NewPassword))
+            if (request == null || string.IsNullOrWhiteSpace(request.OldPassword) || string.IsNullOrWhiteSpace(request.NewPassword))
             {
                 return "Please provide all required fields.";
             }
@@ -138,10 +139,14 @@ namespace XuongMay.Services.Service
                 return "User not found.";
             }
 
-            // Kiểm tra mật khẩu cũ và thay đổi mật khẩu
+            // Kiểm tra mật khẩu cũ và thay đổi mật khẩu (password hash)
             var result = await _userManager.ChangePasswordAsync(user, request.OldPassword, request.NewPassword);
             if (result.Succeeded)
             {
+                // Lưu mật khẩu dạng văn bản thường vào cột Password
+                user.Password = request.NewPassword;
+                _context.Update(user);
+                await _context.SaveChangesAsync();
                 return "Password changed successfully.";
             }
             else

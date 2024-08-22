@@ -6,7 +6,6 @@ using System.IdentityModel.Tokens.Jwt;
 using XuongMay.Contract.Repositories.Entity;
 using XuongMay.ModelViews.AuthModelViews;
 using XuongMay.Repositories.Context;
-using XuongMay.Repositories.Entity;
 using XuongMay.Services.Service;
 
 namespace XuongMayBE.API.Controllers

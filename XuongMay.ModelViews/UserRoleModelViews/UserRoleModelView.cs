@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace XuongMay.ModelViews.UserRoleModelViews
+﻿namespace XuongMay.ModelViews.UserRoleModelViews
 {
     public class UserRoleModelView
     {

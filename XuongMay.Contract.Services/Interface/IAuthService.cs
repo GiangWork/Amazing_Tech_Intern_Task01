@@ -1,5 +1,4 @@
 ﻿using System.Security.Claims;
-using XuongMay.Contract.Repositories.Entity;
 using XuongMay.ModelViews.AuthModelViews;
 using XuongMay.Repositories.Entity;
 

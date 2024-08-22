@@ -1,6 +1,5 @@
 ﻿using XuongMay.Contract.Repositories.Entity;
 using XuongMay.Core;
-using XuongMay.ModelViews.PaginationModelView;
 using XuongMay.ModelViews.ProductModelView;
 
 namespace XuongMay.Contract.Services.Interface

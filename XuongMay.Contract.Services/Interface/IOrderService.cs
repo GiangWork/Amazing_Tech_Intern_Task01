@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using XuongMay.Contract.Repositories.Entity;
+﻿using XuongMay.Contract.Repositories.Entity;
 using XuongMay.Core;
 using XuongMay.ModelViews.OrderModelView;
 

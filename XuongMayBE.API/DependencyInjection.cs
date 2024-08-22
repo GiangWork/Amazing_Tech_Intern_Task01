@@ -56,11 +56,13 @@ namespace XuongMayBE.API
                 .AddScoped<IRoleService, RoleService>();
         }
 
+        // Đăng ký Automapper
         private static void AddAutoMapper(this IServiceCollection services)
         {
             services.AddAutoMapper(typeof(AutoMapperConfig).Assembly);
         }
 
+        // Thêm chức năng xác thực vào swagger
         private static void AddAuthorization(this IServiceCollection services)
         {
             services.AddSwaggerGen(c =>
@@ -94,6 +96,7 @@ namespace XuongMayBE.API
             });
         }
 
+        // Tạo role mặc định khi chạy hệ thống
         private static void AddDefaultRole(this IServiceCollection services)
         {
             using var serviceProvider = services.BuildServiceProvider();
@@ -118,6 +121,7 @@ namespace XuongMayBE.API
             }).GetAwaiter().GetResult();
         }
 
+        // Tạo tài khoản admin khi chạy hệ thống
         private static void AddAdminAccount(this IServiceCollection services, IConfiguration configuration)
         {
             using var serviceProvider = services.BuildServiceProvider();
